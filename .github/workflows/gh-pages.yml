@@ -6,6 +6,11 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: write       # <-- allows push to branches
+  pages: write          # <-- optional (needed if using pages API)
+  id-token: write       # <-- optional (needed for pages API auth)
+
 jobs:
   deploy:
     runs-on: ubuntu-22.04
