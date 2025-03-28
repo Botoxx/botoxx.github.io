@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+{{ partial "head" . }}
+<body>
+    <div class="container">
+        {{ partial "header" . }}
+
+        {{ partial "nav" . }}
+
+        <main class="main-content">
+            <section id="about" class="section">
+                <h2 class="section-title">About Me</h2>
+                <div class="section-content">
+                    {{ with .Site.GetPage "/about" }}
+                        {{ .Content }}
+                    {{ end }}
+                </div>
+            </section>
+
+            <section id="experience" class="section">
+                <h2 class="section-title">Work Experience</h2>
+                <div class="section-content">
+                    {{ with .Site.GetPage "/experience" }}
+                        {{ .Content }}
+                    {{ end }}
+                </div>
+            </section>
+
+            <section id="education" class="section">
+                <h2 class="section-title">Education</h2>
+                <div class="section-content">
+                    {{ with .Site.GetPage "/education" }}
+                        {{ .Content }}
+                    {{ end }}
+                </div>
+            </section>
+
+            <section id="skills" class="section">
+                <h2 class="section-title">Skills</h2>
+                <div class="section-content">
+                    {{ with .Site.GetPage "/skills" }}
+                        {{ .Content }}
+                    {{ end }}
+                </div>
+            </section>
+
+            <section id="languages" class="section">
+                <h2 class="section-title">Languages</h2>
+                <div class="section-content">
+                    {{ with .Site.GetPage "/languages" }}
+                        {{ .Content }}
+                    {{ end }}
+                </div>
+            </section>
+
+            <section id="courses" class="section">
+                <h2 class="section-title">Courses & Certifications</h2>
+                <div class="section-content">
+                    {{ with .Site.GetPage "/courses" }}
+                        {{ .Content }}
+                    {{ end }}
+                </div>
+            </section>
+        </main>
+
+        {{ partial "footer" . }}
+    </div>
+    
+    <a href="#" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</body>
+</html>

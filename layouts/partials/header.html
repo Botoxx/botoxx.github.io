@@ -1,0 +1,17 @@
+<header class="header">
+    <div class="profile">
+        <div class="profile-image">
+            <span class="profile-icon"><i class="fas fa-user-circle"></i></span>
+        </div>
+        <div class="profile-content">
+            <h1>{{ .Site.Title }}</h1>
+            <h2>{{ .Site.Params.jobtitle }}</h2>
+            <div class="profile-links">
+                <a href="{{ .Site.Params.github }}" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a href="{{ .Site.Params.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="mailto:{{ .Site.Params.email }}"><i class="fas fa-envelope"></i> Email</a>
+                <a href="#" onclick="window.print();return false;" class="print-button"><i class="fas fa-print"></i> Print</a>
+            </div>
+        </div>
+    </div>
+</header>

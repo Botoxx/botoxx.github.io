@@ -1,0 +1,10 @@
+<nav class="main-nav">
+    <ul>
+        <li><a href="{{ if .IsHome }}#about{{ else }}/#about{{ end }}">About</a></li>
+        <li><a href="{{ if .IsHome }}#experience{{ else }}/#experience{{ end }}">Experience</a></li>
+        <li><a href="{{ if .IsHome }}#education{{ else }}/#education{{ end }}">Education</a></li>
+        <li><a href="{{ if .IsHome }}#skills{{ else }}/#skills{{ end }}">Skills</a></li>
+        <li><a href="{{ if .IsHome }}#languages{{ else }}/#languages{{ end }}">Languages</a></li>
+        <li><a href="{{ if .IsHome }}#courses{{ else }}/#courses{{ end }}">Courses</a></li>
+    </ul>
+</nav>

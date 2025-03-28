@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+{{ partial "head" . }}
+<body>
+    <div class="container">
+        {{ partial "header" . }}
+
+        {{ partial "nav" . }}
+
+        <main class="main-content">
+            <section class="section">
+                <h1 class="section-title">{{ .Title }}</h1>
+                <div class="section-content">
+                    {{ .Content }}
+                </div>
+            </section>
+        </main>
+
+        {{ partial "footer" . }}
+    </div>
+    
+    <a href="#" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</body>
+</html>

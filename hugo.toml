@@ -1,3 +1,18 @@
 baseURL = 'https://botoxx.github.io/'
 languageCode = 'en-us'
 title = 'Botond Geiszt CV'
+disableKinds = ['taxonomy', 'taxonomyTerm']
+enableEmoji = true
+
+[params]
+  description = "DevOps Engineer with cloud-native expertise"
+  author = "Botond Geiszt"
+  github = "https://github.com/botoxx"
+  linkedin = "https://linkedin.com/in/botond-geiszt"
+  email = "contact@example.com"
+  jobtitle = "DevOps Engineer"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
