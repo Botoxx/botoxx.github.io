@@ -14,7 +14,7 @@ draft: false
 - Led the innovation of AI-assisted developer tools that significantly reduce debugging time and improve code maintainability
 
 ## DevOps Engineer | Ericsson, Budapest
-*January 2022 - December 2024*
+*January 2022 - Present*
 
 - Development and maintenance of a cloud-native Internet Multimedia Subsystem
 - Designing, implementing, and maintaining robust and scalable CI/CD pipelines
