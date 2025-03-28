@@ -4,8 +4,17 @@ date: 2025-03-20
 draft: false
 ---
 
+## Solution Architect | Codenomads, Budapest
+*January 2025 - Present*
+
+- Architected and developed sophisticated code analysis tools leveraging Large Language Model capabilities for intelligent code comprehension
+- Engineered seamless integration of state-of-the-art LLMs with custom tooling, optimizing performance and accuracy for technical applications
+- Designed and implemented complex orchestration systems for autonomous LLM agents, enabling multi-step reasoning and collaborative problem-solving
+- Established robust CI/CD pipelines and automation workflows, enhancing development velocity while maintaining code quality standards
+- Led the innovation of AI-assisted developer tools that significantly reduce debugging time and improve code maintainability
+
 ## DevOps Engineer | Ericsson, Budapest
-*January 2022 - Present*
+*January 2022 - December 2024*
 
 - Development and maintenance of a cloud-native Internet Multimedia Subsystem
 - Designing, implementing, and maintaining robust and scalable CI/CD pipelines
