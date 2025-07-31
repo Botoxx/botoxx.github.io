@@ -13,9 +13,8 @@ draft: false
 - Helm
 - Microservices architecture
 
-## Programming Languages
+## Scripting Languages
 - Python
-- Golang
 - Bash
 
 ## AI & Advanced Technologies
@@ -25,5 +24,5 @@ draft: false
 
 ## Collaboration Tools
 - Git
-- API development
-- Documentation systems
+- Jira
+- Confluence
