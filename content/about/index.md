@@ -10,7 +10,7 @@ draft: false
 **Specialization:** DevOps Engineering, Cloud Architecture, AI Integration
 
 ## Professional Focus
-DevOps Engineer specializing in enterprise-scale cloud infrastructure and emerging AI technologies. Proven track record delivering mission-critical systems for telecommunications and enterprise software clients with focus on long-term professional partnerships.
+DevOps Engineer specializing in enterprise-scale cloud infrastructure and emerging AI technologies. Proven track record of delivering mission-critical systems for telecommunications and enterprise software clients with a focus on long-term professional partnerships.
 
 **Educational Background:** Electrical Engineering, Budapest University of Technology and Economics - Department of Telecommunications and Media Informatics (2017-2022)
 
