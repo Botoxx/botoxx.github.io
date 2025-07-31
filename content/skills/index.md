@@ -9,7 +9,7 @@ draft: false
 - Docker, containerization
 - CI/CD (Jenkins, Spinnaker)
 - Terraform, Infrastructure as Code
-- Azure (AZ-104 certified)
+- Azure
 - Helm
 - Microservices architecture
 

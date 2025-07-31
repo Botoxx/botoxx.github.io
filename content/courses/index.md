@@ -5,8 +5,9 @@ draft: false
 ---
 
 - ISTQB Foundation level Software Tester
-- Securing Kubernetes
-- Troubleshooting Kubernetes
+- ComponentSoft: KBS-302 - Kubernetes and Container-based Application Security
+- Ethical Hacking
+- ComponentSoft: KBS-343 - Kubernetes Troubleshooting
 - AZ-104T00-A: Microsoft Azure Administrator
-- Ethical Hacking, ComponentSoft
 - ComponentSoft: OpenShift Administrator
+- ComponentSoft: AI-434 - GenAI Application Development with LLMs
