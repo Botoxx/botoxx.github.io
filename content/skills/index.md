@@ -5,17 +5,23 @@ draft: false
 ---
 
 ## DevOps & Cloud Technologies
+- Microservices architecture
+- Containerization, Docker
+- Helm
 - Kubernetes, OpenShift
-- Docker, containerization
+- Functional/ Integration testing
+- Test Automation
+- Lifecycle Management
 - CI/CD (Jenkins, Spinnaker)
 - Terraform, Infrastructure as Code
-- Azure
-- Helm
-- Microservices architecture
+- Azure, AWS
 
-## Scripting Languages
-- Python
+## Languages
 - Bash
+- Python
+- Groovy
+- JavaScript
+- PHP
 
 ## AI & Advanced Technologies
 - AI agent building
