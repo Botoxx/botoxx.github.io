@@ -5,7 +5,7 @@ draft: false
 ---
 
 ## Senior Software Engineer | Codenomads, Budapest
-*January 2025 - Present (Contract)*
+*January 2025 - June 2025 (Contract)*
 
 **Situation:** Leading AI-driven development initiatives for enterprise clients requiring advanced code analysis and automation solutions.
 
@@ -20,7 +20,7 @@ draft: false
 ---
 
 ## DevOps Engineer | Ericsson, Budapest  
-*January 2022 - December 2024 (3-year engagement)*
+*January 2022 - Present (over 3-year engagement)*
 
 **Situation:** Responsible for enterprise-scale cloud-native Internet Multimedia Subsystem serving millions of telecommunications users across European markets.
 
