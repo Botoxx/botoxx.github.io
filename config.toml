@@ -11,7 +11,7 @@ theme = "niello"
 [params.info]
   job = "DevOps Engineer"
   phone = "+36203814568"
-  email = "botond@codenomads.io"
+  email = "g.pont.botond@gmail.com"
   linkedin = "https://linkedin.com/in/botond-geiszt"
 
 [params.profileImage]
