@@ -6,7 +6,7 @@ draft: false
 
 ## Core Technologies
 
-### Cloud Platforms & Infrastructure (Expert)
+### Cloud Platforms & Infrastructure (Advanced)
 - **Azure** - DevOps pipelines, resource management, IaC deployment
 - **AWS** - EC2, S3, Lambda, CloudFormation
 - **Terraform** - Infrastructure as Code, multi-cloud provisioning
