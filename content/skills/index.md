@@ -17,11 +17,9 @@ draft: false
 ### Programming & Scripting Languages (Advanced)
 - **Python** - Automation, API development, data processing
 - **Bash** - System administration, CI/CD scripting
-- **JavaScript** - Frontend integration, Node.js backends
 - **Groovy** - Jenkins pipeline scripting
-- **PHP** - Web application development
 
-### DevOps & Automation (Expert)
+### DevOps & Automation (Advanced)
 - **CI/CD Pipelines** - Jenkins, Spinnaker, Azure DevOps
 - **Microservices Architecture** - Design patterns, API gateways
 - **Infrastructure as Code** - Terraform, ARM templates, CloudFormation
