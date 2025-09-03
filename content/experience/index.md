@@ -25,7 +25,7 @@ draft: false
 **Situation:** Responsible for enterprise-scale cloud-native Internet Multimedia Subsystem serving millions of telecommunications users across European markets.
 
 **Key Accomplishments:**
-- Led design and implementation of robust CI/CD pipeline infrastructure supporting 50+ microservices
+- Led design and implementation of robust CI/CD pipeline infrastructure supporting 20+ microservices
 - Managed comprehensive vulnerability assessment program reducing security incidents
 - Engineered Infrastructure as Code solutions using Terraform for hybrid cloud deployments.
 - Orchestrated Kubernetes and OpenShift environments
