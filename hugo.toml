@@ -1,4 +1,4 @@
-baseURL = 'https://botoxx.github.io/'
+baseURL = 'https://cloudgeist.cloud/'
 languageCode = 'en-us'
 title = 'Botond Geiszt'
 disableKinds = ['taxonomy', 'taxonomyTerm']
