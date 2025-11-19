@@ -711,16 +711,49 @@ code {
         --container-padding: 1rem;
         --space-2xl: 2rem;
         --space-3xl: 2.5rem;
-        --nav-height: 3.5rem;
+    }
+
+    .main-nav {
+        position: sticky;
+        height: auto;
+        padding: 0.5rem 0;
+    }
+
+    .main-nav .container {
+        padding: 0;
     }
 
     .main-nav ul {
-        gap: var(--space-xs);
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0 1rem;
+    }
+
+    .main-nav li {
+        flex: 0 0 calc(50% - 0.25rem);
     }
 
     .main-nav a {
-        padding: var(--space-xs) var(--space-sm);
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.75rem 0.5rem;
         font-size: 0.875rem;
+        background-color: var(--bg-tertiary);
+        border: 1px solid var(--border-medium);
+        border-radius: var(--radius-md);
+    }
+
+    .main-nav a:hover,
+    .main-nav a.active {
+        background-color: var(--accent-primary);
+        border-color: var(--accent-primary);
+        color: var(--text-inverse);
+    }
+
+    .main-nav a::after {
+        display: none;
     }
 
     .header {
