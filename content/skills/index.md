@@ -8,7 +8,7 @@ draft: false
 
 ### Cloud Platforms & Infrastructure (Advanced)
 - **Azure** - DevOps pipelines, resource management, IaC deployment
-- **AWS** - EC2, S3, CloudFormation
+- **AWS** - EC2, S3, CloudFormation, VPC, IAM, Lambda
 - **Terraform** - Infrastructure as Code, multi-cloud provisioning
 - **Kubernetes** - Container orchestration, monitoring
 - **OpenShift** - Enterprise container platform, operators
