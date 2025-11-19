@@ -273,10 +273,11 @@ code {
 }
 
 .profile {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: var(--space-2xl);
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    gap: var(--space-xl);
+    text-align: center;
 }
 
 .profile-image {
@@ -294,6 +295,12 @@ code {
     font-size: 5rem;
     color: var(--text-inverse);
     opacity: 0.9;
+}
+
+.profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .profile-content h1 {
@@ -316,6 +323,7 @@ code {
     flex-wrap: wrap;
     gap: var(--space-md);
     margin-top: var(--space-xl);
+    justify-content: center;
 }
 
 .profile-links a {
@@ -688,20 +696,6 @@ code {
         --space-3xl: 3rem;
     }
 
-    .profile {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: var(--space-xl);
-    }
-
-    .profile-image {
-        margin: 0 auto;
-    }
-
-    .profile-links {
-        justify-content: center;
-    }
-
     #skills .section-content ul {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     }
@@ -832,8 +826,19 @@ code {
     }
 
     .profile {
-        grid-template-columns: auto 1fr;
+        flex-direction: row;
+        justify-content: flex-start;
+        text-align: left;
         gap: 1rem;
+    }
+
+    .profile-content {
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .profile-links {
+        justify-content: flex-start;
     }
 
     .profile-image {
