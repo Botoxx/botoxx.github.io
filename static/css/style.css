@@ -320,6 +320,18 @@ code {
     margin-bottom: var(--space-lg);
 }
 
+.profile-motto {
+    max-width: 600px;
+    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.7;
+    color: var(--text-tertiary);
+    margin-bottom: var(--space-lg);
+    padding: 0 var(--space-md);
+    opacity: 0.95;
+}
+
 .profile-links {
     display: flex;
     flex-wrap: wrap;

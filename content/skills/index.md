@@ -7,8 +7,7 @@ draft: false
 ## Core Technologies
 
 ### Cloud Platforms & Infrastructure (Advanced)
-- **Azure** - DevOps pipelines, resource management, IaC deployment
-- **AWS** - EC2, S3, CloudFormation, VPC, IAM, Lambda
+- **AWS** - Networking, Data, Compute
 - **Terraform** - Infrastructure as Code, multi-cloud provisioning
 - **Kubernetes** - Container orchestration, monitoring
 - **OpenShift** - Enterprise container platform, operators
@@ -20,10 +19,10 @@ draft: false
 - **Groovy** - Jenkins pipeline scripting
 
 ### DevOps & Automation (Advanced)
-- **CI/CD Pipelines** - Jenkins, Spinnaker, Azure DevOps
+- **CI/CD Pipelines** - Jenkins, Spinnaker, GitHub Actions
 - **Microservices Architecture** - Design patterns, API gateways
 - **Infrastructure as Code** - Terraform, ARM templates, CloudFormation
-- **Configuration Management** - Ansible, Helm charts
+- **Configuration Management** - Helm charts
 - **Monitoring & Observability** - Prometheus, Grafana, ELK stack
 
 ### AI & Machine Learning (Intermediate)
@@ -32,7 +31,7 @@ draft: false
 - **GenAI Applications** - Custom implementations, API integration
 
 ### Development Tools & Practices (Advanced)
-- **Version Control** - Git, GitHub, GitLab workflows
+- **Version Control** - Git, GitHub
 - **Project Management** - Jira, Confluence, Agile methodologies
 - **Testing** - Unit testing, integration testing, test automation
 - **API Development** - RESTful services, GraphQL, documentation

@@ -4,6 +4,20 @@ date: 2025-03-20
 draft: false
 ---
 
+## DevOps Engineer | ApexLab, Budapest
+*January 2026 - Present*
+
+**Situation:** Leading cloud migration initiatives for enterprise clients transitioning from on-premises and legacy cloud infrastructure to AWS-based solutions.
+
+**Key Accomplishments:**
+- Architecting and executing large-scale workload migration strategies to AWS, ensuring minimal downtime and business continuity
+- Designing cloud-native infrastructure using AWS services and Infrastructure as Code practices
+- Implementing automated migration pipelines and validation frameworks for seamless workload transitions
+
+**Technologies:** Claude, AWS, Terraform, CloudFormation, Docker, Kubernetes, Python, Bash
+
+---
+
 ## Senior Software Engineer | Codenomads, Budapest
 *January 2025 - June 2025 (Contract)*
 
@@ -20,7 +34,7 @@ draft: false
 ---
 
 ## DevOps Engineer | Ericsson, Budapest
-*January 2022 - Present*
+*January 2022 - January 2026*
 
 **Situation:** Responsible for enterprise-scale cloud-native Internet Multimedia Subsystem serving millions of telecommunications users across American markets.
 
@@ -30,7 +44,7 @@ draft: false
 - Engineered Infrastructure as Code solutions using Terraform for hybrid cloud deployments
 - Orchestrated Kubernetes and OpenShift environments
 
-**Technologies:** Kubernetes, OpenShift, Terraform, Azure, Jenkins, Spinnaker, Python, Bash
+**Technologies:** Kubernetes, OpenShift, Terraform, Jenkins, Spinnaker, Python, Bash
 
 ---
 
