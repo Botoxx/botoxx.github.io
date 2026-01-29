@@ -4,17 +4,18 @@ date: 2025-03-20
 draft: false
 ---
 
-## DevOps Engineer | ApexLab, Budapest
+## Cloud Engineer | ApexLab, Budapest
 *January 2026 - Present*
 
-**Situation:** Leading cloud migration initiatives for enterprise clients transitioning from on-premises and legacy cloud infrastructure to AWS-based solutions.
+**Situation:** Designing and implementing cloud infrastructure and AI-powered solutions, combining AWS cloud migration expertise with cutting-edge LLM application development.
 
 **Key Accomplishments:**
 - Architecting and executing large-scale workload migration strategies to AWS, ensuring minimal downtime and business continuity
-- Designing cloud-native infrastructure using AWS services and Infrastructure as Code practices
-- Implementing automated migration pipelines and validation frameworks for seamless workload transitions
+- Designing and deploying production-ready RAG (Retrieval-Augmented Generation) chatbots leveraging vector databases and large language models for enterprise knowledge bases
+- Building LLM-integrated software solutions with custom prompt engineering, agentic workflows, and tool orchestration for business automation
+- Implementing cloud-native infrastructure using AWS services and Infrastructure as Code practices with automated migration pipelines and validation frameworks
 
-**Technologies:** Claude, AWS, Terraform, CloudFormation, Docker, Kubernetes, Python, Bash
+**Technologies:** Claude, AWS (Bedrock, Lambda, S3, OpenSearch), Terraform, Docker, Kubernetes, Python, LangChain, Vector Databases, Bash
 
 ---
 
