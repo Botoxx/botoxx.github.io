@@ -1,3 +1,11 @@
 <footer class="footer">
-    <p>&copy; {{ now.Format "2006" }} {{ .Site.Params.author }}. All rights reserved.</p>
+    <div class="container">
+        <pre class="rule" aria-hidden="true">└──────────────────────────────────────────────────────────────────────────┘</pre>
+        <p>
+            <span class="t-prompt">$</span>
+            echo &copy; {{ now.Format "2006" }} {{ .Site.Params.author }} ·
+            <a href="{{ .Site.Params.github }}/botoxx.github.io" target="_blank" rel="noopener noreferrer">source</a> ·
+            built with <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">hugo</a>
+        </p>
+    </div>
 </footer>

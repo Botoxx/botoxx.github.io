@@ -1,12 +1,16 @@
-<nav class="main-nav">
+<nav class="main-nav" aria-label="Primary">
     <div class="container">
         <ul>
-            <li><a href="{{ if .IsHome }}#about{{ else }}/#about{{ end }}">About</a></li>
-            <li><a href="{{ if .IsHome }}#experience{{ else }}/#experience{{ end }}">Experience</a></li>
-            <li><a href="{{ if .IsHome }}#education{{ else }}/#education{{ end }}">Education</a></li>
-            <li><a href="{{ if .IsHome }}#skills{{ else }}/#skills{{ end }}">Skills</a></li>
-            <li><a href="{{ if .IsHome }}#languages{{ else }}/#languages{{ end }}">Languages</a></li>
-            <li><a href="{{ if .IsHome }}#courses{{ else }}/#courses{{ end }}">Courses</a></li>
+            <li><a href="{{ if .IsHome }}#about{{ else }}/#about{{ end }}"><span class="nav-num">§01</span> about</a></li>
+            <li><a href="{{ if .IsHome }}#experience{{ else }}/#experience{{ end }}"><span class="nav-num">§02</span> experience</a></li>
+            <li><a href="{{ if .IsHome }}#skills{{ else }}/#skills{{ end }}"><span class="nav-num">§03</span> skills</a></li>
+            <li><a href="{{ if .IsHome }}#education{{ else }}/#education{{ end }}"><span class="nav-num">§04</span> education</a></li>
+            <li><a href="{{ if .IsHome }}#courses{{ else }}/#courses{{ end }}"><span class="nav-num">§05</span> certs</a></li>
+            <li><a href="/blog/"><span class="nav-num">§06</span> blog</a></li>
         </ul>
+        <button id="theme-toggle" type="button" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+            <svg class="ico ico--sun" width="18" height="18" aria-hidden="true"><use href="#i-sun"/></svg>
+            <svg class="ico ico--moon" width="18" height="18" aria-hidden="true"><use href="#i-moon"/></svg>
+        </button>
     </div>
 </nav>

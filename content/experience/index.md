@@ -4,7 +4,7 @@ date: 2025-03-20
 draft: false
 ---
 
-## Cloud Engineer | ApexLab, Budapest
+## Cloud Engineer | ApexLab, Budapest <span class="status-pill status-pill--present">PRESENT</span>
 *January 2026 - Present*
 
 **Situation:** Designing and implementing cloud infrastructure and AI-powered solutions, combining AWS cloud migration expertise with cutting-edge LLM application development.
@@ -16,21 +16,6 @@ draft: false
 - Implementing cloud-native infrastructure using AWS services and Infrastructure as Code practices with automated migration pipelines and validation frameworks
 
 **Technologies:** Claude, AWS (Bedrock, Lambda, S3, OpenSearch), Terraform, Docker, Kubernetes, Python, LangChain, Vector Databases, Bash
-
----
-
-## Senior Software Engineer | Codenomads, Budapest
-*January 2025 - June 2025 (Contract)*
-
-**Situation:** Leading AI-driven development initiatives for enterprise clients requiring advanced code analysis and automation solutions.
-
-**Achievements:**
-- Architected sophisticated LLM integration platform reducing code review time
-- Implemented autonomous AI agent orchestration systems enabling multi-step reasoning workflows for complex technical decision-making
-- Designed and deployed CI/CD automation frameworks achieving faster deployment cycles across multiple client projects
-
-
-**Technologies:** Claude, Python, Docker, Kubernetes, APIs, Jenkins, Terraform
 
 ---
 
@@ -46,6 +31,20 @@ draft: false
 - Orchestrated Kubernetes and OpenShift environments
 
 **Technologies:** Kubernetes, OpenShift, Terraform, Jenkins, Spinnaker, Python, Bash
+
+---
+
+## Senior Software Engineer | Codenomads, Budapest <span class="status-pill status-pill--concurrent">CONCURRENT WITH ERICSSON</span>
+*January 2025 - June 2025 (Contract)*
+
+**Situation:** Leading AI-driven development initiatives for enterprise clients requiring advanced code analysis and automation solutions, executed concurrently with the Ericsson role.
+
+**Achievements:**
+- Architected sophisticated LLM integration platform reducing code review time
+- Implemented autonomous AI agent orchestration systems enabling multi-step reasoning workflows for complex technical decision-making
+- Designed and deployed CI/CD automation frameworks achieving faster deployment cycles across multiple client projects
+
+**Technologies:** Claude, Python, Docker, Kubernetes, APIs, Jenkins, Terraform
 
 ---
 

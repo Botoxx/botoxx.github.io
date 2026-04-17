@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+{{ partial "head.html" . }}
+<body>
+    <script>
+      // Pre-paint theme bootstrap to avoid FOUC. Resolves to dark|light.
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var sys = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+          var t = stored === "light" || stored === "dark" ? stored : sys;
+          document.documentElement.dataset.theme = t;
+        } catch (e) { /* localStorage blocked, default dark */ }
+      })();
+    </script>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+    {{ partial "icons.html" . }}
+
+    {{ partial "header.html" . }}
+    {{ partial "nav.html" . }}
+
+    <main id="main" class="main-content">
+        {{ block "main" . }}{{ end }}
+    </main>
+
+    {{ partial "footer.html" . }}
+
+    <a href="#" class="back-to-top" aria-label="Back to top">
+        <svg width="20" height="20" aria-hidden="true"><use href="#i-arrow-up"/></svg>
+    </a>
+
+    <script src="/js/main.js" defer></script>
+</body>
+</html>
