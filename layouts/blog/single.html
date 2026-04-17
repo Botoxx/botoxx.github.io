@@ -1,4 +1,5 @@
 {{ define "main" }}
+{{ if .Date.IsZero }}{{ errorf "blog post %q has no date in frontmatter" .Path }}{{ end }}
 <article class="section post">
     <div class="container container--prose">
         <pre class="rule" aria-hidden="true">┌─ /blog/{{ .File.ContentBaseName }} ───────────────────────────────────────────────────┐</pre>

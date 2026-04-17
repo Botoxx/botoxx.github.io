@@ -1,11 +1,7 @@
 baseURL = "https://cloudgeist.cloud/"
-languageCode = "en-us"
 title = "Botond Geiszt"
 enableEmoji = true
 enableRobotsTXT = true
-
-[pagination]
-  pagerSize = 10
 
 [taxonomies]
   tag = "tags"

@@ -78,12 +78,13 @@ jobs:
         with:
           path: ./public
 
-      - name: HTML link check (warn-only)
-        continue-on-error: true
-        uses: chabad360/htmlproofer-action@master
-        with:
-          directory: ./public
-          arguments: --disable-external --ignore-status-codes "0,403,429,503"
+      - name: HTML link check
+        run: |
+          gem install --user-install html-proofer -v '~> 5.0'
+          "$(gem env user_gemhome)/bin/htmlproofer" ./public \
+            --disable-external \
+            --ignore-status-codes "0,403,429,503" \
+            --no-enforce-https
 
   # Deployment job
   deploy:

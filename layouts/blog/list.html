@@ -8,19 +8,7 @@
         {{ $paginator := .Paginate (where .Pages "Type" "blog") }}
         <ul class="log-list" style="margin-top:2rem">
             {{ range $paginator.Pages }}
-            <li class="log-item">
-                <header>
-                    <time datetime="{{ .Date.Format "2006-01-02" }}" class="log-date">{{ .Date.Format "2006-01-02" }}</time>
-                    <span class="log-meta">· {{ .ReadingTime }} min</span>
-                    {{ with .Params.tags }}
-                    <span class="log-tags">
-                        {{ range . }}<a href="/tags/{{ . | urlize }}/" class="tag">#{{ . }}</a>{{ end }}
-                    </span>
-                    {{ end }}
-                </header>
-                <a class="log-title" href="{{ .RelPermalink }}">{{ .Title }}</a>
-                {{ with .Params.summary }}<p class="log-summary">{{ . }}</p>{{ end }}
-            </li>
+                {{ partial "post-card.html" (dict "post" . "showMeta" true "showTags" true) }}
             {{ end }}
         </ul>
 

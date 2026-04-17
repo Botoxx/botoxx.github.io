@@ -7,14 +7,7 @@
 
         <ul class="log-list" style="margin-top:1.5rem">
             {{ range .Pages }}
-            <li class="log-item">
-                <header>
-                    <time datetime="{{ .Date.Format "2006-01-02" }}" class="log-date">{{ .Date.Format "2006-01-02" }}</time>
-                    <span class="log-meta">· {{ .ReadingTime }} min</span>
-                </header>
-                <a class="log-title" href="{{ .RelPermalink }}">{{ .Title }}</a>
-                {{ with .Params.summary }}<p class="log-summary">{{ . }}</p>{{ end }}
-            </li>
+                {{ partial "post-card.html" (dict "post" . "showMeta" true) }}
             {{ end }}
         </ul>
 

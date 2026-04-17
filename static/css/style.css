@@ -239,6 +239,8 @@ img, svg, video { max-width: 100%; height: auto; }
   position: relative;
 }
 .terminal::after {
+  /* Scanline overlay sits below the title bar — 28px matches .terminal-bar
+     padding (0.55rem * 2 + dot height ~7px). Adjust if the bar grows. */
   content: "";
   position: absolute; inset: 28px 0 0;
   pointer-events: none;
@@ -299,6 +301,22 @@ img, svg, video { max-width: 100%; height: auto; }
 @keyframes pulse  { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 @keyframes blink  { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
 
+/* ----- Shared "mono surface" atom: comma list keeps markdown-rendered <li>
+        (skills/languages/courses) and bespoke anchors (.profile-links, .tag--lg)
+        on the same baseline. Per-component overrides follow each block. ----- */
+.profile-links a,
+.sub-section + .section-content ul li,
+#courses .section-content ul li,
+#skills .section-content ul li,
+.tag--lg {
+  font-family: var(--font-mono);
+  background: var(--bg-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-sm);
+  transition: border-color var(--t-fast), background var(--t-fast), color var(--t-fast);
+}
+.sub-section + .section-content ul li { border-radius: 999px; }
+
 /* ----- Profile links (under terminal) ----- */
 .profile-links {
   display: flex; flex-wrap: wrap; gap: 0.5rem;
@@ -307,12 +325,10 @@ img, svg, video { max-width: 100%; height: auto; }
 .profile-links a {
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.5rem 0.85rem;
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--r-sm);
-  font-family: var(--font-mono); font-size: 0.875rem;
-  color: var(--fg-0); text-decoration: none;
-  background: var(--bg-2);
-  transition: all var(--t-fast);
+  font-size: 0.875rem;
+  color: var(--fg-0);
+  text-decoration: none;
+  border-color: var(--rule-strong);
 }
 .profile-links a:hover {
   border-color: var(--accent);
@@ -445,13 +461,8 @@ img, svg, video { max-width: 100%; height: auto; }
 }
 #skills .section-content ul li {
   padding: 0.6rem 0.8rem;
-  background: var(--bg-2);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-sm);
   font-size: 0.92rem;
-  font-family: var(--font-mono);
   color: var(--fg-1);
-  transition: border-color var(--t-fast), background var(--t-fast);
 }
 #skills .section-content ul li:hover {
   border-color: var(--accent);
@@ -473,20 +484,14 @@ img, svg, video { max-width: 100%; height: auto; }
 }
 .sub-section + .section-content ul li {
   padding: 0.3rem 0.7rem;
-  background: var(--bg-2);
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  font-family: var(--font-mono); font-size: 0.85rem;
+  font-size: 0.85rem;
 }
 
 /* Courses */
 #courses .section-content ul { display: grid; gap: 0.4rem; }
 #courses .section-content ul li {
   padding: 0.55rem 0.8rem 0.55rem 2rem;
-  background: var(--bg-2);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-sm);
-  font-family: var(--font-mono); font-size: 0.88rem;
+  font-size: 0.88rem;
   position: relative;
   color: var(--fg-1);
 }
@@ -625,8 +630,8 @@ img, svg, video { max-width: 100%; height: auto; }
 .tag--lg {
   font-size: 0.95rem;
   padding: 0.3rem 0.6rem;
-  border: 1px solid var(--rule-strong); border-radius: var(--r-sm);
-  background: var(--bg-2); display: inline-block;
+  border-color: var(--rule-strong); /* uses shared mono surface above */
+  display: inline-block;
 }
 .tag--lg:hover { border-color: var(--accent); }
 
