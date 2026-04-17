@@ -1,0 +1,31 @@
+{{ define "main" }}
+<section class="section">
+    <div class="container container--prose">
+        <pre class="rule" aria-hidden="true">┌─ /blog ───────────────────────────────────────────────────────────────────┐</pre>
+        <h1 class="page-title">{{ .Title }}</h1>
+        {{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}
+
+        {{ $paginator := .Paginate (where .Pages "Type" "blog") }}
+        <ul class="log-list" style="margin-top:2rem">
+            {{ range $paginator.Pages }}
+                {{ partial "post-card.html" (dict "post" . "showMeta" true "showTags" true) }}
+            {{ end }}
+        </ul>
+
+        {{ if gt $paginator.TotalPages 1 }}
+        <nav class="pager" aria-label="Pagination">
+            {{ if $paginator.HasPrev }}<a href="{{ $paginator.Prev.URL }}">← newer</a>{{ end }}
+            <span class="pager-pos">{{ $paginator.PageNumber }} / {{ $paginator.TotalPages }}</span>
+            {{ if $paginator.HasNext }}<a href="{{ $paginator.Next.URL }}">older →</a>{{ end }}
+        </nav>
+        {{ end }}
+
+        <p class="cta">
+            <a href="/blog/index.xml">
+                <svg width="14" height="14" aria-hidden="true" style="vertical-align:-2px"><use href="#i-rss"/></svg>
+                rss feed
+            </a>
+        </p>
+    </div>
+</section>
+{{ end }}

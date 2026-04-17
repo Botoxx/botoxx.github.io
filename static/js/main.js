@@ -1,179 +1,124 @@
-/**
- * Modern Portfolio JavaScript
- * Using Intersection Observer for better performance
- */
+/* botoxx.github.io — Telemetry Console runtime */
+(function () {
+  "use strict";
 
-document.addEventListener('DOMContentLoaded', function() {
-    // ============================================
-    // Smooth Scrolling for Anchor Links
-    // ============================================
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            const targetId = this.getAttribute('href').substring(1);
-            if (!targetId) return; // Skip if the href is just "#"
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  const safeStorage = {
+    get: (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} },
+  };
 
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                e.preventDefault();
+  // ---------- Theme toggle ----------
+  // Smooth scroll + scroll-padding-top is handled in CSS (style.css :root),
+  // so this file is only state + interactions, not navigation.
+  const root = document.documentElement;
+  const toggleBtn = $("#theme-toggle");
 
-                // Smooth scroll with offset
-                const navHeight = document.querySelector('.main-nav')?.offsetHeight || 64;
-                const targetPosition = targetElement.offsetTop - navHeight - 32;
-
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-
-                // Update nav active state
-                updateActiveNav(this);
-            }
-        });
-    });
-
-    // ============================================
-    // Intersection Observer for Active Nav
-    // ============================================
-    const sections = document.querySelectorAll('.section[id]');
-    const navLinks = document.querySelectorAll('.main-nav a');
-
-    const observerOptions = {
-        root: null,
-        rootMargin: '-20% 0px -60% 0px',
-        threshold: 0
+  const setTheme = (t, animated) => {
+    const apply = () => {
+      root.dataset.theme = t;
+      safeStorage.set("theme", t);
+      if (toggleBtn) toggleBtn.setAttribute("aria-pressed", String(t === "dark"));
     };
-
-    const observerCallback = (entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const sectionId = entry.target.getAttribute('id');
-                const correspondingLink = document.querySelector(`.main-nav a[href="#${sectionId}"]`);
-
-                if (correspondingLink) {
-                    navLinks.forEach(link => link.classList.remove('active'));
-                    correspondingLink.classList.add('active');
-                }
-            }
-        });
-    };
-
-    const sectionObserver = new IntersectionObserver(observerCallback, observerOptions);
-    sections.forEach(section => sectionObserver.observe(section));
-
-    // Helper function to update active nav
-    function updateActiveNav(clickedLink) {
-        navLinks.forEach(link => link.classList.remove('active'));
-        clickedLink.classList.add('active');
+    if (animated && document.startViewTransition && !reduce.matches) {
+      document.startViewTransition(apply);
+    } else {
+      apply();
     }
+  };
 
-    // ============================================
-    // Sticky Nav Background on Scroll
-    // ============================================
-    const mainNav = document.querySelector('.main-nav');
-    let lastScrollY = window.scrollY;
-
-    const updateNavBackground = () => {
-        const currentScrollY = window.scrollY;
-
-        if (currentScrollY > 100) {
-            mainNav?.classList.add('scrolled');
-        } else {
-            mainNav?.classList.remove('scrolled');
-        }
-
-        lastScrollY = currentScrollY;
-    };
-
-    // Throttle scroll events for better performance
-    let scrollTimeout;
-    window.addEventListener('scroll', () => {
-        if (scrollTimeout) return;
-
-        scrollTimeout = setTimeout(() => {
-            updateNavBackground();
-            updateBackToTop();
-            scrollTimeout = null;
-        }, 50);
-    }, { passive: true });
-
-    // Initial check
-    updateNavBackground();
-
-    // ============================================
-    // Back to Top Button
-    // ============================================
-    const backToTopButton = document.querySelector('.back-to-top');
-
-    const updateBackToTop = () => {
-        if (window.scrollY > 400) {
-            backToTopButton?.classList.add('show');
-        } else {
-            backToTopButton?.classList.remove('show');
-        }
-    };
-
-    if (backToTopButton) {
-        backToTopButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        updateBackToTop();
-    }
-
-    // ============================================
-    // Initial Active Nav State
-    // ============================================
-    const setInitialActiveNav = () => {
-        const hash = window.location.hash;
-
-        if (hash) {
-            const targetLink = document.querySelector(`.main-nav a[href="${hash}"]`);
-            if (targetLink) {
-                updateActiveNav(targetLink);
-                return;
-            }
-        }
-
-        // Default to first link
-        const firstLink = document.querySelector('.main-nav a');
-        if (firstLink) {
-            firstLink.classList.add('active');
-        }
-    };
-
-    setInitialActiveNav();
-
-    // ============================================
-    // Fade-in Animations on Scroll
-    // ============================================
-    const fadeElements = document.querySelectorAll('.section-content > *');
-
-    const fadeObserverOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-
-    const fadeObserverCallback = (entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }, index * 50); // Stagger animations
-            }
-        });
-    };
-
-    const fadeObserver = new IntersectionObserver(fadeObserverCallback, fadeObserverOptions);
-    fadeElements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(1rem)';
-        element.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
-        fadeObserver.observe(element);
+  // Initialize aria-pressed from the pre-paint script's resolved theme.
+  if (toggleBtn) {
+    toggleBtn.setAttribute("aria-pressed", String(root.dataset.theme === "dark"));
+    toggleBtn.addEventListener("click", () => {
+      setTheme(root.dataset.theme === "dark" ? "light" : "dark", true);
     });
-});
+  }
+  // React to OS changes only if user hasn't explicitly chosen via the toggle.
+  matchMedia("(prefers-color-scheme: light)").addEventListener("change", (e) => {
+    if (!safeStorage.get("theme")) setTheme(e.matches ? "light" : "dark", false);
+  });
+
+  // ---------- Active section in nav ----------
+  const sections = $$(".section[id]");
+  const navLinks = $$(".main-nav a[href*='#']");
+  const linkFor = (id) => navLinks.find((l) => l.getAttribute("href").endsWith("#" + id));
+  if (sections.length && navLinks.length && "IntersectionObserver" in window) {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          navLinks.forEach((l) => l.classList.remove("active"));
+          linkFor(e.target.id)?.classList.add("active");
+        });
+      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: 0 }
+    );
+    sections.forEach((s) => obs.observe(s));
+  }
+
+  // ---------- Back to top ----------
+  const back = $(".back-to-top");
+  if (back) {
+    back.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: reduce.matches ? "auto" : "smooth" });
+    });
+    let ticking = false;
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          back.classList.toggle("show", window.scrollY > 400);
+          ticking = false;
+        });
+      },
+      { passive: true }
+    );
+  }
+
+  // ---------- Terminal widget ----------
+  // Replays the `whoami` keystrokes and shows a blinking caret. The terminal
+  // markup ships with the final command pre-rendered for SR/no-JS users; this
+  // only animates the visual layer. Skipped entirely under reduced-motion.
+  const screen = $("#term-screen");
+  const cmdEl  = screen?.querySelector(".t-cmd");
+  if (cmdEl && !reduce.matches) {
+    const finalCmd = cmdEl.textContent;
+    cmdEl.textContent = "";
+    const caret = document.createElement("span");
+    caret.className = "t-caret";
+    cmdEl.after(caret);
+
+    const ac = new AbortController();
+    let i = 0;
+    const tick = () => {
+      if (ac.signal.aborted) return;
+      if (i >= finalCmd.length) {
+        // Remove caret a beat after typing finishes, then unbind.
+        setTimeout(() => { caret.remove(); ac.abort(); }, 1200);
+        return;
+      }
+      cmdEl.textContent += finalCmd[i++];
+      setTimeout(() => requestAnimationFrame(tick), 55 + Math.random() * 35);
+    };
+    setTimeout(() => requestAnimationFrame(tick), 350);
+
+    // Tab-hide → finalize immediately so users returning don't see a half-typed
+    // command, and so we drop the listener (AbortController, not a leak).
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (!document.hidden) return;
+        ac.abort();
+        cmdEl.textContent = finalCmd;
+        caret.remove();
+      },
+      { signal: ac.signal }
+    );
+  }
+})();

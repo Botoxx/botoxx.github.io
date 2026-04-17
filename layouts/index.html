@@ -1,83 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-{{ partial "head" . }}
-<body>
-    {{ partial "header" . }}
+{{ define "main" }}
+<section id="about" class="section">
+    <div class="container">
+        <pre class="rule" aria-hidden="true">┌─ §01 ─ ABOUT ─────────────────────────────────────────────────────────────┐</pre>
+        <div class="section-content">
+            {{ with .Site.GetPage "/about" }}{{ .Content }}{{ end }}
+        </div>
+    </div>
+</section>
 
-    {{ partial "nav" . }}
+<section id="experience" class="section">
+    <div class="container">
+        <pre class="rule" aria-hidden="true">├─ §02 ─ EXPERIENCE ────────────────────────────────────────────────────────┤</pre>
+        <div class="section-content">
+            {{ with .Site.GetPage "/experience" }}{{ .Content }}{{ end }}
+        </div>
+    </div>
+</section>
 
-    <main class="main-content">
-        <section id="about" class="section">
-            <div class="container">
-                <h2 class="section-title">About Me</h2>
-                <div class="section-content">
-                    {{ with .Site.GetPage "/about" }}
-                        {{ .Content }}
-                    {{ end }}
-                </div>
-            </div>
-        </section>
+<section id="skills" class="section">
+    <div class="container">
+        <pre class="rule" aria-hidden="true">├─ §03 ─ SKILLS ────────────────────────────────────────────────────────────┤</pre>
+        <div class="section-content">
+            {{ with .Site.GetPage "/skills" }}{{ .Content }}{{ end }}
+        </div>
+    </div>
+</section>
 
-        <section id="experience" class="section">
-            <div class="container">
-                <h2 class="section-title">Work Experience</h2>
-                <div class="section-content">
-                    {{ with .Site.GetPage "/experience" }}
-                        {{ .Content }}
-                    {{ end }}
-                </div>
-            </div>
-        </section>
+<section id="education" class="section">
+    <div class="container">
+        <pre class="rule" aria-hidden="true">├─ §04 ─ EDUCATION ─────────────────────────────────────────────────────────┤</pre>
+        <div class="section-content">
+            {{ with .Site.GetPage "/education" }}{{ .Content }}{{ end }}
+        </div>
+        <h3 class="sub-section">Languages</h3>
+        <div class="section-content">
+            {{ with .Site.GetPage "/languages" }}{{ .Content }}{{ end }}
+        </div>
+    </div>
+</section>
 
-        <section id="education" class="section">
-            <div class="container">
-                <h2 class="section-title">Education</h2>
-                <div class="section-content">
-                    {{ with .Site.GetPage "/education" }}
-                        {{ .Content }}
-                    {{ end }}
-                </div>
-            </div>
-        </section>
+<section id="courses" class="section">
+    <div class="container">
+        <pre class="rule" aria-hidden="true">├─ §05 ─ CERTS & COURSES ───────────────────────────────────────────────────┤</pre>
+        <div class="section-content">
+            {{ with .Site.GetPage "/courses" }}{{ .Content }}{{ end }}
+        </div>
+    </div>
+</section>
 
-        <section id="skills" class="section">
-            <div class="container">
-                <h2 class="section-title">Skills</h2>
-                <div class="section-content">
-                    {{ with .Site.GetPage "/skills" }}
-                        {{ .Content }}
-                    {{ end }}
-                </div>
-            </div>
-        </section>
-
-        <section id="languages" class="section">
-            <div class="container">
-                <h2 class="section-title">Languages</h2>
-                <div class="section-content">
-                    {{ with .Site.GetPage "/languages" }}
-                        {{ .Content }}
-                    {{ end }}
-                </div>
-            </div>
-        </section>
-
-        <section id="courses" class="section">
-            <div class="container">
-                <h2 class="section-title">Courses & Certifications</h2>
-                <div class="section-content">
-                    {{ with .Site.GetPage "/courses" }}
-                        {{ .Content }}
-                    {{ end }}
-                </div>
-            </div>
-        </section>
-    </main>
-
-    {{ partial "footer" . }}
-
-    <a href="#" class="back-to-top">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-</body>
-</html>
+{{ $posts := first 3 (where .Site.RegularPages "Section" "blog") }}
+{{ if $posts }}
+<section id="writing" class="section">
+    <div class="container">
+        <pre class="rule" aria-hidden="true">├─ §06 ─ WRITING ───────────────────────────────────────────────────────────┤</pre>
+        <div class="section-content">
+            <ul class="log-list">
+            {{ range $posts }}
+                {{ partial "post-card.html" (dict "post" .) }}
+            {{ end }}
+            </ul>
+            <p class="cta"><a href="/blog/">→ all posts</a> · <a href="/blog/index.xml">rss</a></p>
+        </div>
+    </div>
+</section>
+{{ end }}
+{{ end }}

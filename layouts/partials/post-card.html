@@ -1,0 +1,22 @@
+{{- /*
+  post-card.html — single rendering for a blog post entry.
+  Used on the homepage teaser, /blog/ list, and /tags/<tag>/ pages.
+  Args (dict):
+    post     — *Page (required)
+    showTags — bool (default false)
+    showMeta — bool, includes reading-time (default false)
+*/ -}}
+{{- $p := .post -}}
+<li class="log-item">
+  <header>
+    <time datetime="{{ $p.Date.Format "2006-01-02" }}" class="log-date">{{ $p.Date.Format "2006-01-02" }}</time>
+    {{- if .showMeta }}<span class="log-meta">· {{ $p.ReadingTime }} min</span>{{ end -}}
+    {{- if and .showTags $p.Params.tags }}
+    <span class="log-tags">
+      {{- range $p.Params.tags }}<a href="/tags/{{ . | urlize }}/" class="tag">#{{ . }}</a> {{ end -}}
+    </span>
+    {{- end }}
+  </header>
+  <a class="log-title" href="{{ $p.RelPermalink }}">{{ $p.Title }}</a>
+  {{- with $p.Params.summary }}<p class="log-summary">{{ . }}</p>{{ end }}
+</li>

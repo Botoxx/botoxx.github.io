@@ -32,9 +32,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: 0.145.0
+      HUGO_VERSION: 0.160.1
       HUGO_ENVIRONMENT: production
-      TZ: America/Los_Angeles
+      TZ: Europe/Budapest
     steps:
       - name: Install Hugo CLI
         run: |
@@ -45,7 +45,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive
           fetch-depth: 0
       - name: Setup Pages
         id: pages
@@ -78,6 +77,14 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
+
+      - name: HTML link check
+        run: |
+          gem install --user-install html-proofer -v '~> 5.0'
+          "$(gem env user_gemhome)/bin/htmlproofer" ./public \
+            --disable-external \
+            --ignore-status-codes "0,403,429,503" \
+            --no-enforce-https
 
   # Deployment job
   deploy:

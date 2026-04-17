@@ -1,0 +1,39 @@
+{{ define "main" }}
+{{ if .Date.IsZero }}{{ errorf "blog post %q has no date in frontmatter" .Path }}{{ end }}
+<article class="section post">
+    <div class="container container--prose">
+        <pre class="rule" aria-hidden="true">┌─ /blog/{{ .File.ContentBaseName }} ───────────────────────────────────────────────────┐</pre>
+
+        <header class="post-header">
+            <h1 class="page-title">{{ .Title }}</h1>
+            <p class="post-meta">
+                <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+                · {{ .ReadingTime }} min read
+                {{ with .Params.tags }}
+                · {{ range $i, $t := . }}{{ if $i }} {{ end }}<a href="/tags/{{ $t | urlize }}/" class="tag">#{{ $t }}</a>{{ end }}
+                {{ end }}
+            </p>
+        </header>
+
+        {{ if and .TableOfContents (gt (len .TableOfContents) 50) }}
+        <details class="toc" open>
+            <summary>contents</summary>
+            {{ .TableOfContents }}
+        </details>
+        {{ end }}
+
+        <div class="prose">
+            {{ .Content }}
+        </div>
+
+        <footer class="post-footer">
+            <pre class="rule" aria-hidden="true">└──────────────────────────────────────────────────────────────────────────┘</pre>
+            <nav class="post-nav" aria-label="Post navigation">
+                {{ with .PrevInSection }}<a class="post-nav__link" href="{{ .RelPermalink }}">← {{ .Title }}</a>{{ else }}<span></span>{{ end }}
+                <a class="post-nav__home" href="/blog/">all posts</a>
+                {{ with .NextInSection }}<a class="post-nav__link" href="{{ .RelPermalink }}">{{ .Title }} →</a>{{ else }}<span></span>{{ end }}
+            </nav>
+        </footer>
+    </div>
+</article>
+{{ end }}

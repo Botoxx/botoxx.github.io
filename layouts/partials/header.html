@@ -1,19 +1,38 @@
 <header class="header">
     <div class="container">
-        <div class="profile">
-            <div class="profile-image">
-                <span class="profile-icon"><i class="fas fa-user-circle"></i></span>
+        <div class="terminal" data-prompt="botond@cloudgeist:~$" data-cmd="whoami">
+            <div class="terminal-bar">
+                <span class="terminal-bar__dot terminal-bar__dot--r"></span>
+                <span class="terminal-bar__dot terminal-bar__dot--y"></span>
+                <span class="terminal-bar__dot terminal-bar__dot--g"></span>
+                <span class="terminal-bar__title">— botond@cloudgeist —</span>
             </div>
-            <div class="profile-content">
-                <h1>{{ .Site.Title }}</h1>
-                <h2>{{ .Site.Params.jobtitle }}</h2>
-                <p class="profile-motto">One can build a system that works. One can architect a system that endures scale, failure, attack, cost pressure and human error.</p>
-                <div class="profile-links">
-                    <a href="{{ .Site.Params.github }}" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-                    <a href="{{ .Site.Params.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
-                    <a href="mailto:{{ .Site.Params.email }}"><i class="fas fa-envelope"></i> Email</a>
-                </div>
-            </div>
+            <pre class="terminal-screen" id="term-screen">
+<span class="t-prompt">botond@cloudgeist:~$</span> <span class="t-cmd">whoami</span>
+<span class="t-out">{{ .Site.Title }} — {{ .Site.Params.jobtitle }}</span>
+<span class="t-out t-dim">{{ .Site.Params.motto }}</span>
+
+<span class="t-status">STATUS</span> <span class="t-pulse">●</span> online   <span class="t-status">LOC</span> Budapest, HU   <span class="t-status">LAT</span> 47.49 <span class="t-status">LON</span> 19.04
+            </pre>
+        </div>
+
+        <div class="profile-links" role="list">
+            <a role="listitem" href="{{ .Site.Params.github }}" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <svg width="18" height="18" aria-hidden="true"><use href="#i-github"/></svg>
+                <span>github</span>
+            </a>
+            <a role="listitem" href="{{ .Site.Params.linkedin }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <svg width="18" height="18" aria-hidden="true"><use href="#i-linkedin"/></svg>
+                <span>linkedin</span>
+            </a>
+            <a role="listitem" href="mailto:{{ .Site.Params.email }}" aria-label="Email">
+                <svg width="18" height="18" aria-hidden="true"><use href="#i-mail"/></svg>
+                <span>{{ .Site.Params.email }}</span>
+            </a>
+            <a role="listitem" href="/blog/index.xml" aria-label="RSS feed">
+                <svg width="18" height="18" aria-hidden="true"><use href="#i-rss"/></svg>
+                <span>rss</span>
+            </a>
         </div>
     </div>
 </header>

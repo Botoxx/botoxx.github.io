@@ -1,0 +1,17 @@
+{{ define "main" }}
+<section class="section">
+    <div class="container container--prose">
+        <pre class="rule" aria-hidden="true">┌─ /tags/{{ .Title | lower }} ──────────────────────────────────────────────────┐</pre>
+        <h1 class="page-title">#{{ .Title }}</h1>
+        <p class="t-dim">{{ len .Pages }} post{{ if ne (len .Pages) 1 }}s{{ end }} tagged <code>{{ .Title }}</code></p>
+
+        <ul class="log-list" style="margin-top:1.5rem">
+            {{ range .Pages }}
+                {{ partial "post-card.html" (dict "post" . "showMeta" true) }}
+            {{ end }}
+        </ul>
+
+        <p class="cta"><a href="/tags/">← all tags</a></p>
+    </div>
+</section>
+{{ end }}
