@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 48" role="img" aria-label="cloudgeist">
+  <!-- Mark -->
+  <rect x="2" y="8" width="32" height="32" rx="5" fill="#07090f"/>
+  <path d="M10 17 L17 24 L10 31" stroke="#ffb454" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="19" y="30" width="9" height="3" rx="1" fill="#ffb454"/>
+  <!-- Wordmark -->
+  <text x="46" y="32" font-family="ui-monospace, 'JetBrains Mono', 'IBM Plex Mono', monospace"
+        font-size="22" font-weight="500" fill="#e5edf5" letter-spacing="-0.5">cloudgeist</text>
+  <!-- Caret -->
+  <rect x="220" y="14" width="10" height="22" fill="#ffb454" opacity="0.85"/>
+</svg>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="cloudgeist">
+  <rect width="32" height="32" rx="5" fill="#07090f"/>
+  <path d="M8 9 L15 16 L8 23" stroke="#ffb454" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="17" y="22" width="9" height="3" rx="1" fill="#ffb454"/>
+</svg>
