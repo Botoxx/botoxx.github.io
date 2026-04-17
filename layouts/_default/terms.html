@@ -1,0 +1,13 @@
+{{ define "main" }}
+<section class="section">
+    <div class="container container--prose">
+        <pre class="rule" aria-hidden="true">┌─ /tags ───────────────────────────────────────────────────────────────────┐</pre>
+        <h1 class="page-title">Tags</h1>
+        <ul class="tag-cloud">
+            {{ range .Data.Terms.Alphabetical }}
+            <li><a class="tag tag--lg" href="{{ .Page.RelPermalink }}">#{{ .Name }}</a> <span class="t-dim">({{ .Count }})</span></li>
+            {{ end }}
+        </ul>
+    </div>
+</section>
+{{ end }}

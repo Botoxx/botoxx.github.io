@@ -1,0 +1,24 @@
+{{ define "main" }}
+<section class="section">
+    <div class="container container--prose">
+        <pre class="rule" aria-hidden="true">┌─ /tags/{{ .Title | lower }} ──────────────────────────────────────────────────┐</pre>
+        <h1 class="page-title">#{{ .Title }}</h1>
+        <p class="t-dim">{{ len .Pages }} post{{ if ne (len .Pages) 1 }}s{{ end }} tagged <code>{{ .Title }}</code></p>
+
+        <ul class="log-list" style="margin-top:1.5rem">
+            {{ range .Pages }}
+            <li class="log-item">
+                <header>
+                    <time datetime="{{ .Date.Format "2006-01-02" }}" class="log-date">{{ .Date.Format "2006-01-02" }}</time>
+                    <span class="log-meta">· {{ .ReadingTime }} min</span>
+                </header>
+                <a class="log-title" href="{{ .RelPermalink }}">{{ .Title }}</a>
+                {{ with .Params.summary }}<p class="log-summary">{{ . }}</p>{{ end }}
+            </li>
+            {{ end }}
+        </ul>
+
+        <p class="cta"><a href="/tags/">← all tags</a></p>
+    </div>
+</section>
+{{ end }}
