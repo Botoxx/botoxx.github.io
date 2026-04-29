@@ -583,9 +583,9 @@ img, svg, video { max-width: 100%; height: auto; }
   .nav-num { display: none; }
   .theme-toggle { width: 2rem; height: 2rem; }
   .rule { font-size: 0.7rem; }
-  .profile-links a { font-size: 0.8rem; padding: 0.4rem 0.65rem; }
+  .profile-links { gap: 0.4rem; }
+  .profile-links a { font-size: 0.8rem; padding: 0.45rem 0.55rem; gap: 0; min-width: 2.25rem; justify-content: center; }
   .profile-links a span { display: none; }
-  .profile-links a[aria-label="Email"] span { display: inline; }
   #skills .section-content ul { grid-template-columns: 1fr; }
 }
 
