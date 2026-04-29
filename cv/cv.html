@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Botond Geiszt — Cloud Engineer · AI Integrator</title>
+<meta name="author" content="Botond Geiszt">
+<style>
+  /* ---------- page ---------- */
+  @page {
+    size: A4;
+    margin: 11mm 12mm 10mm 12mm;
+  }
+
+  /* ---------- reset & base ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    font-size: 9.4pt;
+    line-height: 1.32;
+    color: #1a1f2c;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  :root {
+    --fg-0: #1a1f2c;
+    --fg-1: #36405a;
+    --fg-2: #6b778c;
+    --rule: #d8d4c4;
+    --rule-strong: #b85a00;
+    --accent: #b85a00;          /* burnt amber on paper, matches site brand */
+    --accent-soft: #fdf6ec;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  p { margin: 0; }
+
+  /* ---------- header ---------- */
+  .header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 5pt;
+    margin-bottom: 7pt;
+    border-bottom: 1.2pt solid var(--rule-strong);
+  }
+  .name {
+    font-size: 24pt;
+    font-weight: 700;
+    letter-spacing: 0.5pt;
+    line-height: 1.05;
+    color: var(--fg-0);
+  }
+  .name .last { color: var(--accent); }
+  .role {
+    margin-top: 3pt;
+    font-size: 11pt;
+    font-weight: 500;
+    color: var(--fg-1);
+    letter-spacing: 0.2pt;
+  }
+  .contact {
+    text-align: right;
+    font-size: 9pt;
+    color: var(--fg-1);
+    line-height: 1.55;
+  }
+  .contact .row { white-space: nowrap; }
+  .contact .sep { color: var(--fg-2); padding: 0 4pt; }
+
+  /* ---------- sections ---------- */
+  section { margin-top: 6pt; }
+  section:first-of-type { margin-top: 0; }
+  h2 {
+    font-size: 8.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.4pt;
+    color: var(--accent);
+    margin: 0 0 5pt 0;
+    padding-bottom: 2pt;
+    border-bottom: 0.5pt solid var(--rule);
+  }
+
+  /* ---------- summary ---------- */
+  .summary p {
+    color: var(--fg-1);
+    font-size: 10pt;
+    line-height: 1.5;
+  }
+
+  /* ---------- experience ---------- */
+  .role-block { margin-bottom: 5pt; page-break-inside: avoid; }
+  .role-block:last-child { margin-bottom: 0; }
+
+  .role-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10pt;
+  }
+  .role-title {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: var(--fg-0);
+  }
+  .role-title .org { color: var(--accent); font-weight: 700; }
+  .role-title .sep { color: var(--fg-2); padding: 0 4pt; font-weight: 400; }
+  .role-meta {
+    font-size: 9pt;
+    color: var(--fg-2);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .role-tags {
+    margin-top: 1pt;
+    font-size: 9pt;
+    color: var(--fg-2);
+    font-style: italic;
+  }
+  .role-tags .pill {
+    display: inline-block;
+    padding: 0.5pt 5pt;
+    margin-right: 4pt;
+    border: 0.5pt solid var(--rule-strong);
+    border-radius: 8pt;
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 7.5pt;
+    letter-spacing: 0.5pt;
+    text-transform: uppercase;
+    vertical-align: 1pt;
+  }
+
+  ul.bullets {
+    margin: 4pt 0 3pt 0;
+    padding-left: 11pt;
+    list-style: none;
+  }
+  ul.bullets li {
+    position: relative;
+    padding-left: 0;
+    margin-bottom: 1.5pt;
+    color: var(--fg-1);
+    line-height: 1.42;
+  }
+  ul.bullets li::before {
+    content: "▸";
+    color: var(--accent);
+    position: absolute;
+    left: -11pt;
+    top: 0;
+    font-size: 9pt;
+  }
+
+  .stack {
+    margin-top: 3pt;
+    font-size: 9pt;
+    color: var(--fg-2);
+  }
+  .stack .label {
+    color: var(--fg-1);
+    font-weight: 600;
+  }
+
+  /* ---------- skills ---------- */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 110pt 1fr;
+    row-gap: 3pt;
+    column-gap: 10pt;
+    font-size: 9.5pt;
+  }
+  .skills-grid .label {
+    font-weight: 600;
+    color: var(--fg-0);
+  }
+  .skills-grid .value {
+    color: var(--fg-1);
+  }
+
+  /* ---------- two-column row ---------- */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 18pt;
+  }
+  .two-col h2 { margin-top: 0; }
+
+  /* ---------- education / certs ---------- */
+  .edu-line {
+    font-size: 10pt;
+    color: var(--fg-0);
+  }
+  .edu-line .school { font-weight: 600; }
+  .edu-meta {
+    font-size: 9pt;
+    color: var(--fg-2);
+    margin-top: 1pt;
+  }
+  .edu-thesis {
+    font-size: 9pt;
+    color: var(--fg-1);
+    margin-top: 2pt;
+  }
+
+  .cert-line {
+    font-size: 9pt;
+    color: var(--fg-1);
+    line-height: 1.45;
+    text-align: justify;
+    text-align-last: left;
+  }
+
+  /* ---------- languages ---------- */
+  .languages {
+    font-size: 9.5pt;
+    color: var(--fg-1);
+  }
+
+  /* ---------- selected projects ---------- */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 14pt;
+    row-gap: 6pt;
+  }
+  .project { font-size: 9.5pt; }
+  .project .ptitle {
+    font-weight: 600;
+    color: var(--fg-0);
+  }
+  .project .pmeta {
+    color: var(--fg-2);
+    font-size: 9pt;
+    margin-top: 0pt;
+  }
+  .project .presult {
+    color: var(--fg-1);
+    margin-top: 1pt;
+    line-height: 1.4;
+  }
+
+  /* ---------- footer note ---------- */
+  .footnote {
+    margin-top: 10pt;
+    text-align: center;
+    font-size: 7.5pt;
+    color: var(--fg-2);
+    letter-spacing: 0.4pt;
+  }
+</style>
+</head>
+<body>
+
+  <header class="header">
+    <div>
+      <div class="name">Botond <span class="last">Geiszt</span></div>
+      <div class="role">Cloud Engineer · AI Integrator</div>
+    </div>
+    <div class="contact">
+      <div class="row">Budapest, Hungary <span class="sep">·</span> Remote / Hybrid</div>
+      <div class="row">botond@cloudgeist.cloud <span class="sep">·</span> cloudgeist.cloud</div>
+      <div class="row">github.com/botoxx <span class="sep">·</span> linkedin.com/in/botond-geiszt</div>
+    </div>
+  </header>
+
+  <section class="summary">
+    <h2>Summary</h2>
+    <p>
+      Cloud Engineer with 4+ years building scalable cloud-native systems on AWS, Kubernetes, and
+      OpenShift. Specialized in CI/CD automation, Infrastructure as Code, and production-grade
+      LLM/RAG integrations. Track record of compressing deployment cycles, hardening security
+      posture, and shipping AI agents into enterprise environments.
+    </p>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+
+    <div class="role-block">
+      <div class="role-head">
+        <div class="role-title"><span>Cloud Engineer</span><span class="sep">·</span><span class="org">ApexLab</span><span class="sep">·</span><span style="font-weight:400;color:var(--fg-2)">Budapest</span></div>
+        <div class="role-meta">Jan 2026 — Present</div>
+      </div>
+      <div class="role-tags"><span class="pill">Present</span></div>
+      <ul class="bullets">
+        <li>Architecting and executing large-scale workload migration to AWS with minimal-downtime cutovers and business-continuity guarantees.</li>
+        <li>Designing and deploying production-grade RAG chatbots over enterprise knowledge bases using Bedrock, OpenSearch, and vector databases.</li>
+        <li>Building LLM-integrated software with custom prompt engineering, agentic workflows, and tool orchestration for business automation.</li>
+      </ul>
+      <div class="stack"><span class="label">Stack:</span> AWS (Bedrock, Lambda, S3, OpenSearch), Terraform, Docker, Kubernetes, Python, LangChain, vector databases, Bash</div>
+    </div>
+
+    <div class="role-block">
+      <div class="role-head">
+        <div class="role-title"><span>DevOps Engineer</span><span class="sep">·</span><span class="org">Ericsson</span><span class="sep">·</span><span style="font-weight:400;color:var(--fg-2)">Budapest</span></div>
+        <div class="role-meta">Jan 2022 — Jan 2026</div>
+      </div>
+      <ul class="bullets">
+        <li>Led design and implementation of CI/CD pipeline infrastructure supporting 20+ microservices on a cloud-native IMS serving millions of telecom subscribers.</li>
+        <li>Drove vulnerability assessment and CVE remediation programs across the platform, applying defense-in-depth and security patching strategies at scale.</li>
+        <li>Built Helm chart libraries for the microservice fleet, standardizing deployment templating and configuration across hybrid Kubernetes/OpenShift environments.</li>
+      </ul>
+      <div class="stack"><span class="label">Stack:</span> Kubernetes, OpenShift, Helm, Jenkins, Spinnaker, Python, Bash, Prometheus, Grafana</div>
+    </div>
+
+    <div class="role-block">
+      <div class="role-head">
+        <div class="role-title"><span>Senior Software Engineer</span><span class="sep">·</span><span class="org">Codenomads</span><span class="sep">·</span><span style="font-weight:400;color:var(--fg-2)">Budapest (Contract)</span></div>
+        <div class="role-meta">Jan 2025 — Jun 2025</div>
+      </div>
+      <div class="role-tags"><span class="pill">Concurrent w/ Ericsson</span></div>
+      <ul class="bullets">
+        <li>Architected an LLM integration platform that materially reduced code review cycle time across enterprise client teams.</li>
+        <li>Implemented autonomous AI agent orchestration enabling multi-step reasoning workflows for technical decision-making.</li>
+      </ul>
+      <div class="stack"><span class="label">Stack:</span> Claude, Python, Docker, Kubernetes, Jenkins, Terraform, REST APIs</div>
+    </div>
+
+    <div class="role-block">
+      <div class="role-head">
+        <div class="role-title"><span>Software Development Intern</span><span class="sep">·</span><span class="org">Ericsson</span><span class="sep">·</span><span style="font-weight:400;color:var(--fg-2)">Budapest</span></div>
+        <div class="role-meta">Aug 2021 — Dec 2021</div>
+      </div>
+      <div class="stack"><span class="label">Stack:</span> Static analysis tools, Python, Git, CI/CD integration</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Technical Skills</h2>
+    <div class="skills-grid">
+      <div class="label">Cloud &amp; Infra</div>
+      <div class="value">AWS (Bedrock, Lambda, S3, OpenSearch, networking), Kubernetes, OpenShift, Docker, Terraform, ARM, CloudFormation</div>
+
+      <div class="label">DevOps &amp; CI/CD</div>
+      <div class="value">Jenkins, Spinnaker, GitHub Actions, Helm, GitOps, Prometheus, Grafana, ELK</div>
+
+      <div class="label">AI &amp; LLM</div>
+      <div class="value">Anthropic Claude, LangChain, RAG over vector databases, agentic workflows, prompt engineering, multi-LLM orchestration</div>
+
+      <div class="label">Languages</div>
+      <div class="value">Python (advanced), Bash (advanced), Groovy</div>
+
+      <div class="label">Practices</div>
+      <div class="value">Infrastructure as Code, microservices architecture, observability, security hardening (CVE remediation, network policies), Agile</div>
+    </div>
+  </section>
+
+  <section class="two-col">
+    <div>
+      <h2>Education</h2>
+      <div class="edu-line"><span class="school">BSc, Electrical Engineering</span></div>
+      <div class="edu-meta">Budapest University of Technology and Economics — Dept. of Telecommunications and Media Informatics · 2017 — 2022</div>
+      <div class="edu-thesis"><em>Thesis:</em> Measuring the Elasticsearch engine under load.</div>
+    </div>
+    <div>
+      <h2>Languages</h2>
+      <div class="languages">
+        Hungarian — native &nbsp; · &nbsp; English — fluent
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Certifications</h2>
+    <p class="cert-line">
+      Microsoft AZ-104 Azure Administrator &nbsp;·&nbsp;
+      ComponentSoft AI-434 GenAI with LLMs &nbsp;·&nbsp;
+      KBS-302 Kubernetes Security &nbsp;·&nbsp;
+      KBS-343 Kubernetes Troubleshooting &nbsp;·&nbsp;
+      OpenShift Administrator &nbsp;·&nbsp;
+      Ethical Hacking &nbsp;·&nbsp;
+      ISTQB Foundation Software Tester
+    </p>
+  </section>
+
+</body>
+</html>
