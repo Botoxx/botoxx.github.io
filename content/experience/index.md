@@ -27,10 +27,10 @@ draft: false
 **Key Accomplishments:**
 - Led design and implementation of robust CI/CD pipeline infrastructure supporting 20+ microservices
 - Developed deep expertise in security architecture and threat mitigation through extensive vulnerability assessment programs, gaining comprehensive understanding of CVE analysis, security patching strategies, and defense-in-depth principles
-- Engineered Infrastructure as Code solutions using Terraform for hybrid cloud deployments
+- Engineered Helm chart libraries for the microservice fleet, standardizing deployment templating and configuration across hybrid Kubernetes and OpenShift environments
 - Orchestrated Kubernetes and OpenShift environments
 
-**Technologies:** Kubernetes, OpenShift, Terraform, Jenkins, Spinnaker, Python, Bash
+**Technologies:** Kubernetes, OpenShift, Helm, Jenkins, Spinnaker, Python, Bash
 
 ---
 

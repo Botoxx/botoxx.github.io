@@ -30,7 +30,7 @@ draft: false
 
 **Action:**
 - Migrated from monolithic Jenkins setup to cloud-native Spinnaker deployment pipeline
-- Implemented Infrastructure as Code using Terraform for consistent environment provisioning
+- Standardized deployments with Helm chart libraries for consistent environment provisioning across the microservice fleet
 - Built comprehensive monitoring stack with Prometheus, Grafana, and custom alerting
 - Established automated testing gates including security scanning and performance validation
 
