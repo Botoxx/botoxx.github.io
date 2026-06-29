@@ -4,23 +4,6 @@ date: 2025-03-20
 draft: false
 ---
 
-## Cloud-Native LLM Integration Platform
-**Duration:** 6 months (January 2025 - Present) | **Client:** Enterprise Software Company
-
-**Situation:** Client required scalable AI-powered code analysis solution to handle 500+ developers across multiple teams with varying technology stacks.
-
-**Task:** Design and implement enterprise-grade LLM integration platform capable of processing 10,000+ code submissions daily with sub-second response times.
-
-**Action:** 
-- Architected microservices-based platform using Kubernetes and Docker for horizontal scaling
-- Implemented multi-LLM orchestration system supporting OpenAI, Anthropic, and custom models
-- Built robust API gateway with rate limiting, authentication, and monitoring capabilities
-- Designed fault-tolerant system with 99.9% uptime SLA requirements
-
-**Result:** Delivered 45% reduction in code review time, processed 2M+ lines of code weekly, achieved 99.95% uptime with automatic failover mechanisms.
-
----
-
 ## Enterprise CI/CD Pipeline Modernization
 **Duration:** 18 months (2022-2024) | **Client:** Ericsson Telecommunications
 
@@ -52,23 +35,6 @@ draft: false
 - Created automated remediation workflows for common security issues
 
 **Result:** Reduced security incidents by 70%, achieved 100% compliance with telecommunications security standards, implemented zero-trust network architecture serving 10M+ users.
-
----
-
-## AI-Powered Infrastructure Optimization
-**Duration:** 4 months (2024) | **Environment:** Hybrid cloud deployment
-
-**Situation:** Rising cloud costs ($50K+ monthly) due to inefficient resource allocation and manual scaling decisions across 200+ services.
-
-**Task:** Develop intelligent resource optimization system using machine learning for predictive scaling and cost optimization.
-
-**Action:**
-- Built ML-powered analytics platform analyzing historical usage patterns and performance metrics
-- Implemented predictive auto-scaling using Python and Kubernetes Horizontal Pod Autoscaler
-- Created cost optimization dashboards with real-time recommendations and automated actions
-- Developed anomaly detection system for proactive issue identification
-
-**Result:** Achieved 35% reduction in cloud infrastructure costs ($210K annual savings), improved application performance by 25%, reduced manual intervention by 80%.
 
 ---
 
