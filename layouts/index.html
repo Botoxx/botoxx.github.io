@@ -48,20 +48,4 @@
     </div>
 </section>
 
-{{ $posts := first 3 (where .Site.RegularPages "Section" "blog") }}
-{{ if $posts }}
-<section id="writing" class="section">
-    <div class="container">
-        <pre class="rule" aria-hidden="true">├─ §06 ─ WRITING ───────────────────────────────────────────────────────────┤</pre>
-        <div class="section-content">
-            <ul class="log-list">
-            {{ range $posts }}
-                {{ partial "post-card.html" (dict "post" .) }}
-            {{ end }}
-            </ul>
-            <p class="cta"><a href="/blog/">→ all posts</a> · <a href="/blog/index.xml">rss</a></p>
-        </div>
-    </div>
-</section>
-{{ end }}
 {{ end }}
