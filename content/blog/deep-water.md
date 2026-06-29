@@ -6,7 +6,7 @@ summary = "Three AI systems shipped via cognitive collab with Claude Code, and t
 tags = ["ai", "claude-code", "reflection"]
 +++
 
-My probation at Apex Lab ended last week. It's the kind of place where
+My probation ended last week. It's the kind of place where
 you're surrounded by sharp, curious people who casually solve hard
 problems on the way to lunch — I'm glad to be in the ranks. Something
 about wrapping that period made me sit down and actually look back at

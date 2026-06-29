@@ -4,7 +4,7 @@ date: 2025-03-20
 draft: false
 ---
 
-## Cloud Engineer | ApexLab, Budapest <span class="status-pill status-pill--present">PRESENT</span>
+## Cloud Engineer | Budapest <span class="status-pill status-pill--present">PRESENT</span>
 *January 2026 - Present*
 
 **Situation:** Designing and implementing cloud infrastructure and AI-powered solutions, combining AWS cloud migration expertise with cutting-edge LLM application development.
