@@ -38,23 +38,6 @@ draft: false
 
 ---
 
-## AI-Powered Infrastructure Optimization
-**Duration:** 4 months (2024) | **Environment:** Hybrid cloud deployment
-
-**Situation:** Rising cloud costs ($50K+ monthly) due to inefficient resource allocation and manual scaling decisions across 200+ services.
-
-**Task:** Develop intelligent resource optimization system using machine learning for predictive scaling and cost optimization.
-
-**Action:**
-- Built ML-powered analytics platform analyzing historical usage patterns and performance metrics
-- Implemented predictive auto-scaling using Python and Kubernetes Horizontal Pod Autoscaler
-- Created cost optimization dashboards with real-time recommendations and automated actions
-- Developed anomaly detection system for proactive issue identification
-
-**Result:** Achieved 35% reduction in cloud infrastructure costs ($210K annual savings), improved application performance by 25%, reduced manual intervention by 80%.
-
----
-
 ## Elasticsearch Performance Engineering
 **Duration:** 6 months (2021-2022) | **Academic Research Project**
 
