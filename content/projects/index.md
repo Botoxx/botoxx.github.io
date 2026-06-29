@@ -4,23 +4,6 @@ date: 2025-03-20
 draft: false
 ---
 
-## Cloud-Native LLM Integration Platform
-**Duration:** 6 months (January 2025 - Present) | **Client:** Enterprise Software Company
-
-**Situation:** Client required scalable AI-powered code analysis solution to handle 500+ developers across multiple teams with varying technology stacks.
-
-**Task:** Design and implement enterprise-grade LLM integration platform capable of processing 10,000+ code submissions daily with sub-second response times.
-
-**Action:** 
-- Architected microservices-based platform using Kubernetes and Docker for horizontal scaling
-- Implemented multi-LLM orchestration system supporting OpenAI, Anthropic, and custom models
-- Built robust API gateway with rate limiting, authentication, and monitoring capabilities
-- Designed fault-tolerant system with 99.9% uptime SLA requirements
-
-**Result:** Delivered 45% reduction in code review time, processed 2M+ lines of code weekly, achieved 99.95% uptime with automatic failover mechanisms.
-
----
-
 ## Enterprise CI/CD Pipeline Modernization
 **Duration:** 18 months (2022-2024) | **Client:** Ericsson Telecommunications
 
