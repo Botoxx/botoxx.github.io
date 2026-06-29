@@ -86,3 +86,20 @@ draft: false
 - Developed optimization recommendations based on empirical performance data
 
 **Result:** Published performance optimization guidelines improving query response times by 40%, established benchmarking methodology adopted by university's distributed systems course.
+
+---
+
+## Open-source / reference implementations
+
+Reference architectures I maintain in the open — production patterns, currently a work in progress.
+Run them, read them, or use them as a starting point.
+
+| Repository | What it solves |
+|------------|----------------|
+| [aws-platform-baseline](https://github.com/Botoxx/aws-platform-baseline) | Multi-account AWS landing zone in Terraform — VPC, IAM, SCPs, GuardDuty, cost controls |
+| [eks-platform-reference](https://github.com/Botoxx/eks-platform-reference) | Production EKS platform — ArgoCD GitOps, Karpenter, kube-prometheus-stack, OPA |
+| [aws-finops-toolkit](https://github.com/Botoxx/aws-finops-toolkit) | AWS cost audit — finds waste, estimates savings, LLM-generated remediation report |
+| [cicd-pipeline-templates](https://github.com/Botoxx/cicd-pipeline-templates) | Reusable GitHub Actions — Docker build/scan, Terraform gates, Helm deploy, SAST |
+| [llm-infra-aws](https://github.com/Botoxx/llm-infra-aws) | AWS patterns for LLM workloads — managed API proxy and self-hosted GPU on EKS |
+
+More at [github.com/Botoxx](https://github.com/Botoxx).

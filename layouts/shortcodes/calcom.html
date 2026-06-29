@@ -1,0 +1,22 @@
+{{- $handle := .Site.Params.calcom -}}
+{{- $event := .Get "event" | default "intro" -}}
+{{- $subject := .Get "subject" | default "Enquiry" -}}
+{{- $mailto := printf "mailto:%s?%s" .Site.Params.email (querify "subject" $subject) -}}
+{{- if and $handle (ne $handle "YOUR_CALCOM_HANDLE") -}}
+<div class="cal-embed" style="margin:1.5rem 0;border:1px solid var(--accent);border-radius:6px;overflow:hidden;min-height:560px;">
+  <div style="width:100%;height:100%;overflow:auto;" id="cal-{{ $event }}"></div>
+</div>
+<script type="text/javascript">
+  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  Cal("init", "{{ $event }}", { origin: "https://cal.com" });
+  Cal.ns["{{ $event }}"]("inline", {
+    elementOrSelector: "#cal-{{ $event }}",
+    config: { "layout": "month_view" },
+    calLink: "{{ $handle }}/{{ $event }}",
+  });
+  Cal.ns["{{ $event }}"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
+</script>
+<p class="cta">Prefer email? <a href="{{ $mailto | safeURL }}">{{ .Site.Params.email }}</a></p>
+{{- else -}}
+<p class="cta">📅 Online booking opens shortly. For now, email <a href="{{ $mailto | safeURL }}">{{ .Site.Params.email }}</a> and I'll send you times.</p>
+{{- end -}}
