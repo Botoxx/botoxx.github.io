@@ -61,7 +61,9 @@ All content lives in `content/` with each section as a standalone page using `in
 - `content/summary/index.md` - Professional summary (if applicable)
 
 **Layout Architecture:**
-- `layouts/index.html` - Homepage: hero with the interactive shell, waste estimator with request draft, services, audit, timeline, writing, stack. Repeated items come from `data/` (`services.yaml`, `roles.yaml`, `stack.yaml`) and the latest blog posts; they are passed to `home.js` as JSON in `#site-data`
+- `layouts/index.html` - Homepage: hero with the interactive shell, waste estimator with request draft, services, audit, timeline, writing, stack. Repeated items come from `data/` (`services.yaml`, `roles.yaml`, `stack.yaml`, `pricing.yaml`) and the latest blog posts; they are passed to `home.js` as JSON in `#site-data`
+- `layouts/_default/cv.html` - `/cv/` page (stack, certifications, education) from `data/stack.yaml`
+- `layouts/shortcodes/pricing.html` - Audit fee model from `data/pricing.yaml` (used on `/finops-audit/`); change the fee share, turnaround or definition of identified waste there only
 - `layouts/_default/single.html`, `layouts/blog/*.html`, `layouts/_default/{taxonomy,terms}.html` - Inner pages (`.page` + `.prose`)
 - `layouts/partials/`:
   - `head.html` - Meta tags, font preloads, fingerprinted `site.css`
