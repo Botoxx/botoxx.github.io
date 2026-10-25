@@ -79,7 +79,15 @@ import { copyText } from './lib/copy.js';
   // The figures live in one sentence so an edited draft can still be kept in step with the estimate.
   const FIGURES = /Our AWS spend is about [^\n]*/;
   // Fee is a share of the identified yearly waste; the estimate brackets it with the 15–30% range.
-  const feeRange = ({ lo, hi }) => `${eur.format(lo * 12 * data.pricing.share)}–${eur.format(hi * 12 * data.pricing.share)}`;
+  const fee = perMonth => Math.max(data.pricing.minFee, perMonth * 12 * data.pricing.share);
+  const feeRange = ({ lo, hi }) => fee(lo) === fee(hi)
+    ? `${eur.format(fee(lo))} (minimum fee)`
+    : `${eur.format(fee(lo))}–${eur.format(fee(hi))}`;
+  // Months of savings the fee costs: 1.2 above the minimum, longer where the minimum applies.
+  const payback = ({ lo, hi }) => {
+    const fast = fee(hi) / hi, slow = fee(lo) / lo, r = n => Math.round(n * 10) / 10;
+    return r(fast) === r(slow) ? `${r(fast)}` : `${r(fast)}–${r(slow)}`;
+  };
   const figures = e =>
     `Our AWS spend is about ${eur.format(e.v)} a year (${eur.format(e.m)} a month). Your estimator puts typical waste at ${eur.format(e.lo)}–${eur.format(e.hi)} a month, which would make the audit fee roughly ${feeRange(e)}.`;
   const draftText = e => `Hi Botond,\n\n${figures(e)}\n\nCould you send a few times for a 15-minute intro call?\n\nThanks,\n`;
@@ -102,6 +110,7 @@ import { copyText } from './lib/copy.js';
     $('#leak-out').textContent = `${eur.format(lo)}–${eur.format(hi)}`;
     $('#leak-year').textContent = `${eur.format(lo * 12)}–${eur.format(hi * 12)} a year`;
     $('#price-out').textContent = feeRange(est);
+    $('#payback').textContent = `${data.pricing.sharePercent}% of the identified yearly waste, minimum ${eur.format(data.pricing.minFee)}. Pays for itself in ${payback(est)} months of savings.`;
     spend.setAttribute('aria-valuetext', `${eur.format(v)} a year`);
     $('#leak-bar').setAttribute('aria-label', `Of ${eur.format(m)} a month, an estimated ${eur.format(lo)} to ${eur.format(hi)} is waste`);
     syncDraft();
@@ -234,7 +243,7 @@ import { copyText } from './lib/copy.js';
         `annual spend      <span class="c">${eur.format(annual)}</span>  (${eur.format(m)} / month)${p.monthly ? ' <span class="d">read as monthly</span>' : ''}`,
         `typical waste     <span class="a">${eur.format(lo)}–${eur.format(hi)} / month</span>  at 15–30%`,
         `over a year       <span class="a">${eur.format(lo * 12)}–${eur.format(hi * 12)}</span>`,
-        `audit fee         <span class="c">${feeRange({ lo, hi })}</span>  ${data.pricing.sharePercent}% of identified yearly waste, ${data.pricing.vat}`
+        `audit fee         <span class="c">${feeRange({ lo, hi })}</span>  ${data.pricing.sharePercent}% of identified yearly waste, min ${eur.format(data.pricing.minFee)}, ${data.pricing.vat}`
       ]);
       const set = setAudit(annual, true);
       if (set !== annual) print(`note: the audit is built for €20k–200k a year, so the estimator stops at ${eur.format(set)}. Your own figure above still holds.`, 'd');

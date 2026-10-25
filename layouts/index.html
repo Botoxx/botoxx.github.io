@@ -90,7 +90,7 @@
 
         <div class="price" id="price"><span class="sublabel">Audit fee at this estimate</span>
           <div class="spend-row"><span class="big" id="price-out">€1,200–€2,400</span><span class="per">{{ hugo.Data.pricing.vat }}</span></div>
-          <div class="per">{{ hugo.Data.pricing.sharePercent }}% of the waste the audit identifies in a year, so it pays for itself in about 5 weeks of savings. No findings, no fee.</div>
+          <div class="per" id="payback">{{ hugo.Data.pricing.sharePercent }}% of the waste the audit identifies in a year, minimum €{{ lang.FormatNumber 0 hugo.Data.pricing.minFee }}.</div>
         </div>
 
         <button class="cta" id="cta" type="button" aria-expanded="false" aria-controls="draft">Request the audit <svg class="ico"><use href="#i-arrow"/></svg></button>
@@ -175,7 +175,7 @@
       </div>
       <div class="tiers">
         <div class="tier"><span class="sublabel">The fee</span><p class="tier-price">{{ hugo.Data.pricing.sharePercent }}% <span>of the identified yearly waste, {{ hugo.Data.pricing.vat }}</span></p><p>Identified waste is {{ hugo.Data.pricing.basis }}.</p></div>
-        <div class="tier"><span class="sublabel">If nothing turns up</span><p class="tier-price">€0 <span>no findings, no fee</span></p><p>Read-only access, fixed scope, report within {{ hugo.Data.pricing.turnaround }}.</p></div>
+        <div class="tier"><span class="sublabel">Minimum fee</span><p class="tier-price">€{{ lang.FormatNumber 0 hugo.Data.pricing.minFee }} <span>{{ hugo.Data.pricing.vat }}</span></p><p>Applies when {{ hugo.Data.pricing.sharePercent }}% of the identified waste comes to less. Read-only access, fixed scope, report within {{ hugo.Data.pricing.turnaround }}.</p></div>
       </div>
       <div class="report">
         <div class="excerpt">
