@@ -3,7 +3,7 @@
 {{- range first 5 (where site.RegularPages "Type" "blog") -}}
   {{- $posts = $posts | append (dict "date" (.Date.Format "2006-01-02") "title" .Title "url" .RelPermalink) -}}
 {{- end -}}
-{{- $data := dict "email" site.Params.email "posts" $posts "services" hugo.Data.services "roles" hugo.Data.roles -}}
+{{- $data := dict "email" site.Params.email "posts" $posts "services" hugo.Data.services "roles" hugo.Data.roles "pricing" hugo.Data.pricing -}}
 <section class="hero" aria-label="Introduction">
   <canvas id="field" aria-hidden="true"></canvas>
   <div class="wrap">
@@ -88,8 +88,13 @@
           </div>
         </div>
 
+        <div class="price" id="price"><span class="sublabel">Audit fee at this estimate</span>
+          <div class="spend-row"><span class="big" id="price-out">€1,200–€2,400</span><span class="per">{{ hugo.Data.pricing.vat }}</span></div>
+          <div class="per">{{ hugo.Data.pricing.sharePercent }}% of the waste the audit identifies in a year, so it pays for itself in about 5 weeks of savings. No findings, no fee.</div>
+        </div>
+
         <button class="cta" id="cta" type="button" aria-expanded="false" aria-controls="draft">Request the audit <svg class="ico"><use href="#i-arrow"/></svg></button>
-        <p class="cta-note">Read-only access, fixed scope, EU-based. You send one email; I reply with times for a 15-minute intro call.</p>
+        <p class="cta-note">Report within {{ hugo.Data.pricing.turnaround }} of read-only access. You send one email; I reply with times for a 15-minute intro call.</p>
 
         <div class="draft" id="draft" tabindex="-1" hidden>
           <dl>
@@ -168,6 +173,10 @@
           </ul>
         </div>
       </div>
+      <div class="tiers">
+        <div class="tier"><span class="sublabel">The fee</span><p class="tier-price">{{ hugo.Data.pricing.sharePercent }}% <span>of the identified yearly waste, {{ hugo.Data.pricing.vat }}</span></p><p>Identified waste is {{ hugo.Data.pricing.basis }}.</p></div>
+        <div class="tier"><span class="sublabel">If nothing turns up</span><p class="tier-price">€0 <span>no findings, no fee</span></p><p>Read-only access, fixed scope, report within {{ hugo.Data.pricing.turnaround }}.</p></div>
+      </div>
       <div class="report">
         <div class="excerpt">
           <h3>Top findings · estimated savings €1,840/month</h3>
@@ -199,7 +208,7 @@
     <p class="side" aria-hidden="true">experience</p>
     <div class="content">
       <h2 class="statement">From telecom scale to AI in production.</h2>
-      <p class="intro">Four years running CI/CD and Kubernetes for a cloud-native IP Multimedia Subsystem serving millions of users, then cloud migration and LLM systems. Select a role to read it.</p>
+      <p class="intro">Four years running CI/CD and Kubernetes for a cloud-native IP Multimedia Subsystem serving millions of users, then cloud migration and LLM systems. Select a role to read it, or open the <a href="/cv/">full CV</a> with stack, certifications and education.</p>
       <div class="tl-wrap"><svg id="timeline" viewBox="0 0 900 272" role="group" aria-label="Career timeline, 2017 to today"></svg></div>
       <p class="tl-hint">Bars are to scale. A dashed outline marks education; the amber line is today.</p>
       <ol class="tl-list" id="tl-list" aria-label="Roles"></ol>
@@ -255,35 +264,5 @@
 </section>
 
 
-<section class="band" id="stack">
-  <div class="wrap">
-    <p class="side" aria-hidden="true">stack</p>
-    <div class="content">
-      <h2 class="statement">The tools, and the training behind them.</h2>
-      <div class="stack">
-        {{- range hugo.Data.stack.groups }}
-        <div><h3>{{ .name }} <span class="lvl">{{ .level }}</span></h3><ul>
-          {{- range .items }}<li><b>{{ index . 0 }}</b> · {{ index . 1 }}</li>{{ end }}</ul></div>
-        {{- end }}
-      </div>
-      <div class="creds">
-        <div>
-          <span class="sublabel">Courses &amp; certifications</span>
-          <ul>
-            {{- range hugo.Data.stack.certs }}
-            <li><span class="k">{{ index . 0 }}</span>{{ index . 1 }}</li>
-            {{- end }}
-          </ul>
-        </div>
-        <div>
-          <span class="sublabel">Education</span>
-          <p><b style="color:var(--ink)">Electrical Engineering</b>, Budapest University of Technology and Economics. Department of Telecommunications and Media Informatics, 2017–2022. Thesis: measuring the Elasticsearch engine under load.</p>
-          <span class="sublabel" style="margin-top:22px">Languages</span>
-          <p>Hungarian (native), English (fluent)</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 <script type="application/json" id="site-data">{{ $data | jsonify | safeJS }}</script>
 {{ end }}

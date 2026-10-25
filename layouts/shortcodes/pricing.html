@@ -1,0 +1,7 @@
+{{- /* Audit fee model from data/pricing.yaml. */ -}}
+{{- with hugo.Data.pricing -}}
+<div class="tiers">
+  <div class="tier"><span class="sublabel">The fee</span><p class="tier-price">{{ .sharePercent }}% <span>of the identified yearly waste, {{ .vat }}</span></p><p>Identified waste is {{ .basis }}.</p></div>
+  <div class="tier"><span class="sublabel">If nothing turns up</span><p class="tier-price">€0 <span>no findings, no fee</span></p><p>Read-only access, fixed scope, report within {{ .turnaround }}.</p></div>
+</div>
+{{- end -}}

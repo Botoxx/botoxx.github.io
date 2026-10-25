@@ -34,6 +34,12 @@ it and tells you exactly what to do about it.
 > **2. NAT Gateway eu-west-1a — €127/month, 0.2GB/day throughput.** Carrying almost no traffic;
 > a candidate for consolidation.
 
+## Price
+
+You pay a share of what the audit finds, not a day rate. Read-only IAM, no data leaves your account.
+
+{{< pricing >}}
+
 ## Two ways to start
 
 **Run it yourself.** The toolkit is open source, uses a read-only IAM policy, and no data ever leaves
