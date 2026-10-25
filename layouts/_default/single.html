@@ -1,7 +1,9 @@
 {{ define "main" }}
-<article class="page section">
-    <div class="container container--prose">
-        <h1 class="page-title">{{ .Title }}</h1>
+<article class="page">
+    <div class="wrap">
+        <header class="page-head">
+            <h1 class="page-title">{{ .Title }}</h1>
+        </header>
         <div class="prose">
             {{ .Content }}
         </div>

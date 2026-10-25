@@ -1,11 +1,13 @@
 {{ define "main" }}
-<section class="section">
-    <div class="container container--prose">
-        <pre class="rule" aria-hidden="true">┌─ /tags ───────────────────────────────────────────────────────────────────┐</pre>
-        <h1 class="page-title">Tags</h1>
+<section class="page">
+    <div class="wrap">
+        <header class="page-head">
+            <p class="crumb"><a href="/">cloudgeist.cloud</a> / tags</p>
+            <h1 class="page-title">Tags</h1>
+        </header>
         <ul class="tag-cloud">
             {{ range .Data.Terms.Alphabetical }}
-            <li><a class="tag tag--lg" href="{{ .Page.RelPermalink }}">#{{ .Name }}</a> <span class="t-dim">({{ .Count }})</span></li>
+            <li><a class="tag tag--lg" href="{{ .Page.RelPermalink }}">#{{ .Name }}</a> ({{ .Count }})</li>
             {{ end }}
         </ul>
     </div>

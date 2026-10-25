@@ -1,0 +1,66 @@
+# Career timeline on the homepage. start/end are [year, month]; omit end for a current role.
+# Mirrors content/experience/index.md and content/education/index.md; keep them in sync.
+- id: bme
+  edu: true
+  short: Electrical Engineering · BME
+  start: [2017, 9]
+  end: [2022, 1]
+  title: Electrical Engineering
+  org: Budapest University of Technology and Economics
+  dates: Sep 2017 – Jan 2022
+  body: Department of Telecommunications and Media Informatics.
+  items:
+    - "Thesis: measuring the Elasticsearch engine under load."
+  tech: [Elasticsearch, Python, Load testing]
+- id: intern
+  short: Software Dev Intern · Ericsson
+  start: [2021, 8]
+  end: [2021, 12]
+  title: Software Development Intern
+  org: Ericsson, Budapest
+  dates: Aug 2021 – Dec 2021
+  body: Worked with cross-functional engineering teams to set up automated code quality assurance.
+  items:
+    - Built a pre-submission code validation system that combined commercial static analysis tools with custom dynamic checks.
+  tech: [Static analysis, Python, Git, CI/CD]
+- id: devops
+  short: DevOps Engineer · Ericsson
+  start: [2022, 1]
+  end: [2026, 1]
+  title: DevOps Engineer
+  org: Ericsson, Budapest
+  dates: Jan 2022 – Jan 2026
+  body: Responsible for an enterprise-scale, cloud-native IP Multimedia Subsystem serving millions of telecom users across American markets.
+  items:
+    - Led design and implementation of CI/CD pipeline infrastructure supporting 20+ microservices.
+    - "Built deep security expertise through vulnerability assessment: CVE analysis, patching strategy, defense in depth."
+    - Engineered Helm chart libraries that standardized deployment templating across hybrid Kubernetes and OpenShift.
+    - Orchestrated the Kubernetes and OpenShift environments.
+  tech: [Kubernetes, OpenShift, Helm, Jenkins, Spinnaker, Python, Bash]
+- id: codenomads
+  concurrent: true
+  short: Senior SWE · Codenomads
+  start: [2025, 1]
+  end: [2025, 6]
+  title: Senior Software Engineer
+  org: Codenomads, Budapest · contract
+  dates: Jan 2025 – Jun 2025
+  body: Led AI-driven development for enterprise clients that needed code analysis and automation, alongside the DevOps role.
+  items:
+    - Architected an LLM integration platform that reduced code review time.
+    - Implemented autonomous agent orchestration for multi-step reasoning in technical decision-making.
+    - Designed CI/CD automation that shortened deployment cycles across several client projects.
+  tech: [Claude, Python, Docker, Kubernetes, Jenkins, Terraform]
+- id: cloud
+  short: Cloud Engineer
+  start: [2026, 1]
+  title: Cloud Engineer
+  org: Budapest
+  dates: Jan 2026 – present
+  body: Designing cloud infrastructure and AI-powered solutions, combining AWS migration with LLM application development.
+  items:
+    - Architecting large-scale workload migrations to AWS with minimal downtime.
+    - Deploying production RAG chatbots on vector databases and LLMs for enterprise knowledge bases.
+    - Building LLM-integrated software with prompt engineering, agentic workflows, and tool orchestration.
+    - Implementing cloud-native infrastructure as code with automated migration pipelines and validation.
+  tech: [Claude, Bedrock, Lambda, S3, OpenSearch, Terraform, Kubernetes, LangChain]

@@ -1,0 +1,8 @@
+# FinOps audit pricing: a share of the identified yearly waste. Shown in the estimator,
+# the audit section, the /finops-audit/ page (pricing shortcode), the shell and the request draft.
+share: 0.10
+sharePercent: 10
+minFee: 1500
+turnaround: 10 working days
+vat: excl. VAT
+basis: the yearly saving of every finding validated in the report, at your current AWS prices

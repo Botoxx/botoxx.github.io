@@ -14,22 +14,25 @@
       })();
     </script>
 
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="{{ if .IsHome }}#estimate{{ else }}#main{{ end }}">{{ if .IsHome }}Skip to the estimator{{ else }}Skip to content{{ end }}</a>
     {{ partial "icons.html" . }}
 
     {{ partial "header.html" . }}
-    {{ partial "nav.html" . }}
 
-    <main id="main" class="main-content">
+    <main id="main">
         {{ block "main" . }}{{ end }}
     </main>
 
     {{ partial "footer.html" . }}
 
-    <a href="#" class="back-to-top" aria-label="Back to top">
-        <svg width="20" height="20" aria-hidden="true"><use href="#i-arrow-up"/></svg>
-    </a>
-
-    <script src="/js/main.js" defer></script>
+    {{ $opts := dict "minify" hugo.IsProduction "format" "esm" "target" "es2020" }}
+    {{ with resources.Get "js/site.js" | js.Build $opts | fingerprint }}
+    <script type="module" src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}"></script>
+    {{ end }}
+    {{ if .IsHome }}
+    {{ with resources.Get "js/home.js" | js.Build (merge $opts (dict "targetPath" "js/home.js")) | fingerprint }}
+    <script type="module" src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}"></script>
+    {{ end }}
+    {{ end }}
 </body>
 </html>

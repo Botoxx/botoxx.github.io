@@ -1,17 +1,19 @@
 {{ define "main" }}
-<section class="section">
-    <div class="container container--prose">
-        <pre class="rule" aria-hidden="true">┌─ /tags/{{ .Title | lower }} ──────────────────────────────────────────────────┐</pre>
-        <h1 class="page-title">#{{ .Title }}</h1>
-        <p class="t-dim">{{ len .Pages }} post{{ if ne (len .Pages) 1 }}s{{ end }} tagged <code>{{ .Title }}</code></p>
+<section class="page">
+    <div class="wrap">
+        <header class="page-head">
+            <p class="crumb"><a href="/">cloudgeist.cloud</a> / <a href="/tags/">tags</a></p>
+            <h1 class="page-title">#{{ .Title }}</h1>
+            <p class="post-meta">{{ len .Pages }} post{{ if ne (len .Pages) 1 }}s{{ end }} tagged <code>{{ .Title }}</code></p>
+        </header>
 
-        <ul class="log-list" style="margin-top:1.5rem">
+        <ul class="log-list">
             {{ range .Pages }}
                 {{ partial "post-card.html" (dict "post" . "showMeta" true) }}
             {{ end }}
         </ul>
 
-        <p class="cta"><a href="/tags/">← all tags</a></p>
+        <p class="page-links"><a href="/tags/">← All tags</a></p>
     </div>
 </section>
 {{ end }}

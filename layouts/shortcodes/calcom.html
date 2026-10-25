@@ -16,7 +16,7 @@
   });
   Cal.ns["{{ $event }}"]("ui", { "hideEventTypeDetails": false, "layout": "month_view" });
 </script>
-<p class="cta">Prefer email? <a href="{{ $mailto | safeURL }}">{{ .Site.Params.email }}</a></p>
+<p class="cta-line">Prefer email? <a href="{{ $mailto | safeURL }}">{{ .Site.Params.email }}</a></p>
 {{- else -}}
-<p class="cta">📅 Online booking opens shortly. For now, email <a href="{{ $mailto | safeURL }}">{{ .Site.Params.email }}</a> and I'll send you times.</p>
+<p class="cta-line">📅 Online booking opens shortly. For now, email <a href="{{ $mailto | safeURL }}">{{ .Site.Params.email }}</a> and I'll send you times.</p>
 {{- end -}}

@@ -1,51 +1,268 @@
 {{ define "main" }}
-<section id="about" class="section">
-    <div class="container">
-        <pre class="rule" aria-hidden="true">┌─ §01 ─ ABOUT ─────────────────────────────────────────────────────────────┐</pre>
-        <div class="section-content">
-            {{ with .Site.GetPage "/about" }}{{ .Content }}{{ end }}
-        </div>
+{{- $posts := slice -}}
+{{- range first 5 (where site.RegularPages "Type" "blog") -}}
+  {{- $posts = $posts | append (dict "date" (.Date.Format "2006-01-02") "title" .Title "url" .RelPermalink) -}}
+{{- end -}}
+{{- $data := dict "email" site.Params.email "posts" $posts "services" hugo.Data.services "roles" hugo.Data.roles "pricing" hugo.Data.pricing -}}
+<section class="hero" aria-label="Introduction">
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div>
+      <h1>Botond <span class="surname">Geiszt</span></h1>
+      <p class="role">Cloud Engineer · AI Integrator</p>
+      <p class="lede">Cloud-native infrastructure and AI agents in production. I build AWS and Kubernetes platforms for DACH teams, and I find the money those platforms quietly waste.</p>
+      <p class="status"><span class="dot" aria-hidden="true"></span>Budapest, CET. Open to remote contracts in Germany, Austria and Switzerland.</p>
+      <div class="hero-links">
+        <a class="btn-primary" href="#estimate">Estimate your AWS waste <svg class="ico"><use href="#i-arrow"/></svg></a>
+        <a href="#services">The five services</a>
+        <a href="https://github.com/botoxx">GitHub <svg class="ico"><use href="#i-ext"/></svg></a>
+      </div>
+      <ul class="facts">
+        <li><b>4+ yrs</b> production DevOps</li>
+        <li><b>20+</b> microservices on one CI/CD platform</li>
+        <li><b>{{ len hugo.Data.services }}</b> open-source reference repos</li>
+      </ul>
     </div>
+
+    <div style="min-width:0">
+      <div class="shell" id="shell">
+        <div class="shell-bar" aria-hidden="true"><i></i><i></i><i></i><span>geist-shell · zsh</span></div>
+        <div id="shell-out" role="log" aria-live="polite" aria-label="Shell output">
+          <div class="ln"><span class="p">botond@cloudgeist</span><span class="d">:~$</span> terraform plan -target=module.botond</div>
+          <div class="ln d">  # module.botond.contract.dach_remote will be created</div>
+          <div class="ln"><span class="g">  +</span> resource <span class="a">"contract"</span> <span class="a">"dach_remote"</span> {</div>
+          <div class="ln"><span class="g">      +</span> location     = <span class="c">"Budapest, HU · CET"</span></div>
+          <div class="ln"><span class="g">      +</span> mode         = <span class="c">"remote / hybrid"</span></div>
+          <div class="ln"><span class="g">      +</span> availability = <span class="c">"immediate"</span></div>
+          <div class="ln"><span class="g">      +</span> focus        = [<span class="c">"aws"</span>, <span class="c">"eks"</span>, <span class="c">"finops"</span>,</div>
+          <div class="ln">                       <span class="c">"ci-cd"</span>, <span class="c">"llm-infra"</span>]</div>
+          <div class="ln"><span class="g">      +</span> data_region  = <span class="c">"eu"</span></div>
+          <div class="ln"><span class="g">      +</span> lock_in      = <span class="r">false</span></div>
+          <div class="ln">    }</div>
+          <div class="ln">Plan: <span class="g">1 to add</span>, 0 to change, 0 to destroy.</div>
+          <div class="ln"> </div>
+          <div class="ln d">Type <span class="a">help</span> for commands, or tap one below.</div>
+        </div>
+        <form id="shell-form" autocomplete="off">
+          <label for="shell-input">botond@cloudgeist<span>:~$</span></label>
+          <input id="shell-input" type="text" spellcheck="false" autocapitalize="off" aria-label="Shell command">
+        </form>
+      </div>
+      <div class="chips" aria-label="Example commands">
+        <span class="chips-label">try</span>
+        <button class="chip" type="button" data-cmd="whoami">whoami</button>
+        <button class="chip" type="button" data-cmd="audit 120k/yr">audit 120k/yr</button>
+        <button class="chip" type="button" data-cmd="verify">verify</button>
+        <button class="chip" type="button" data-cmd="blog">blog</button>
+        <button class="chip" type="button" data-cmd="book">book</button>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section id="experience" class="section">
-    <div class="container">
-        <pre class="rule" aria-hidden="true">├─ §02 ─ EXPERIENCE ────────────────────────────────────────────────────────┤</pre>
-        <div class="section-content">
-            {{ with .Site.GetPage "/experience" }}{{ .Content }}{{ end }}
+<section class="band" id="estimate">
+  <div class="wrap">
+    <p class="side" aria-hidden="true">estimate</p>
+    <div class="content est-grid">
+      <div class="calc">
+        <h2 class="statement">What is your AWS bill leaking?</h2>
+        <p class="sub">Accounts without a FinOps owner typically lose 15–30% to idle compute, orphaned storage and oversized instances.</p>
+        <label for="spend" class="field-label">Annual AWS spend</label>
+        <div class="spend-row">
+          <span class="big" id="spend-out">€80,000</span>
+          <span class="per" id="spend-month">€6,667 / month</span>
         </div>
+        <input id="spend" type="range" min="20000" max="200000" step="5000" value="80000">
+        <div class="scale" aria-hidden="true"><span>€20k</span><span>€200k</span></div>
+
+        <div class="leak">
+          <span class="sublabel">Typical waste</span>
+          <div class="spend-row">
+            <span class="big" id="leak-out">€1,000–€2,000</span>
+            <span class="per">per month</span>
+          </div>
+          <div class="per" id="leak-year">€12,000–€24,000 a year</div>
+          <div class="bar" role="img" id="leak-bar" aria-label="Typical monthly waste range on a scale of zero to five thousand euros"><div class="band"></div></div>
+          <div class="bar-ticks" aria-hidden="true">
+            <span class="t0">€0</span><span class="t50">€2,500</span><span class="t100">€5,000 / mo</span>
+          </div>
+        </div>
+
+        <div class="price" id="price"><span class="sublabel">Audit fee at this estimate</span>
+          <div class="spend-row"><span class="big" id="price-out">€1,200–€2,400</span><span class="per">{{ hugo.Data.pricing.vat }}</span></div>
+          <div class="per" id="payback">{{ hugo.Data.pricing.sharePercent }}% of the waste the audit identifies in a year, minimum €{{ lang.FormatNumber 0 hugo.Data.pricing.minFee }}.</div>
+        </div>
+
+        <button class="cta" id="cta" type="button" aria-expanded="false" aria-controls="draft">Request the audit <svg class="ico"><use href="#i-arrow"/></svg></button>
+        <p class="cta-note">Report within {{ hugo.Data.pricing.turnaround }} of read-only access. You send one email; I reply with times for a 15-minute intro call.</p>
+
+        <div class="draft" id="draft" tabindex="-1" hidden>
+          <dl>
+            <dt>To</dt><dd id="draft-to">{{ site.Params.email }}</dd>
+            <dt>Subject</dt><dd id="draft-subject">FinOps audit enquiry</dd>
+          </dl>
+          <label for="draft-body">Your message (edit freely)</label>
+          <textarea id="draft-body" spellcheck="true"></textarea>
+          <div class="draft-actions">
+            <button class="btn2" id="draft-copy" type="button"><svg class="ico"><use href="#i-copy"/></svg><span>Copy message</span></button>
+            <a class="btn2 primary" id="draft-mail" href="mailto:{{ site.Params.email }}"><svg class="ico"><use href="#i-mail"/></svg>Open in mail app</a>
+          </div>
+          <p class="fine">Nothing is sent from this page. If the mail app does not open, copy the message and paste it into a new email to the address above.</p>
+        </div>
+        <p class="note">An estimate from the stated 15–30% range, not a quote. The audit replaces it with per-finding numbers from your account.</p>
+      </div>
+      <div class="how">
+        <h3>How the audit works</h3>
+        <ol class="steps">
+          <li><span><b>You send one email.</b> The draft carries your estimate.</span></li>
+          <li><span><b>A 15-minute intro call.</b> What you're running, where it hurts, and whether I can help.</span></li>
+          <li><span><b>A read-only, fixed-scope audit.</b> Your billing data stays in your account.</span></li>
+          <li><span><b>The report.</b> JSON findings, a ranked Markdown report, and the top five fixes with exact commands.</span></li>
+        </ol>
+        <p><a href="#audit">What the audit checks <svg class="ico"><use href="#i-arrow"/></svg></a></p>
+      </div>
     </div>
+  </div>
 </section>
 
-<section id="skills" class="section">
-    <div class="container">
-        <pre class="rule" aria-hidden="true">├─ §03 ─ SKILLS ────────────────────────────────────────────────────────────┤</pre>
-        <div class="section-content">
-            {{ with .Site.GetPage "/skills" }}{{ .Content }}{{ end }}
-        </div>
+<section class="band" id="services">
+  <div class="wrap">
+    <p class="side" aria-hidden="true">services</p>
+    <div class="content">
+      <h2 class="statement">Five services, each with open-source code you can read before we talk.</h2>
+      <p class="intro">Senior DevOps and cloud engineer, available for remote contracts in the DACH market. Production cloud platforms, and the cost discipline that keeps them sane.</p>
+      <ul class="svc">
+        {{- range hugo.Data.services }}
+        <li><span class="tag">{{ .tag }}</span><h3>{{ .name }}</h3><p>{{ .text }}</p><span class="repo"><a href="https://github.com/Botoxx/{{ .repo }}">{{ .repo }} <svg class="ico"><use href="#i-ext"/></svg></a></span></li>
+        {{- end }}
+      </ul>
+      <div class="why">
+        <div><span class="sublabel">DACH-ready</span><p>CET timezone, fluent English, EU-based invoicing.</p></div>
+        <div><span class="sublabel">GDPR and data residency</span><p>EU regions by default and least-privilege access. Your data stays yours.</p></div>
+        <div><span class="sublabel">Partnership over projects</span><p>Sustainable systems you can run after I'm gone, with no lock-in.</p></div>
+      </div>
     </div>
+  </div>
 </section>
 
-<section id="education" class="section">
-    <div class="container">
-        <pre class="rule" aria-hidden="true">├─ §04 ─ EDUCATION ─────────────────────────────────────────────────────────┤</pre>
-        <div class="section-content">
-            {{ with .Site.GetPage "/education" }}{{ .Content }}{{ end }}
+<section class="band" id="audit">
+  <div class="wrap">
+    <p class="side" aria-hidden="true">finops audit</p>
+    <div class="content">
+      <h2 class="statement">What the audit checks, and what you get back.</h2>
+      <p class="intro">Built for SaaS teams with €20k–200k a year in AWS spend and no dedicated FinOps function.</p>
+      <div class="audit">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th scope="col">Area</th><th scope="col">What I look for</th></tr></thead>
+            <tbody>
+              <tr><td>Compute</td><td>Idle EC2 (&lt;5% CPU over 7 days), oversized instance types, unused Elastic IPs</td></tr>
+              <tr><td>Storage</td><td>Unattached EBS volumes, S3 buckets without lifecycle rules, stale snapshots</td></tr>
+              <tr><td>Networking</td><td>Underutilised NAT Gateways, idle load balancers</td></tr>
+              <tr><td>Database</td><td>RDS instances under 10% CPU, unencrypted snapshots</td></tr>
+              <tr><td>Spend</td><td>Anomalies against your prior 30-day baseline</td></tr>
+            </tbody>
+          </table>
         </div>
-        <h3 class="sub-section">Languages</h3>
-        <div class="section-content">
-            {{ with .Site.GetPage "/languages" }}{{ .Content }}{{ end }}
+        <div>
+          <span class="sublabel">What you get back</span>
+          <ul class="get">
+            <li><svg class="ico"><use href="#i-check"/></svg><span><b>JSON findings</b>, machine-readable, drop straight into CI.</span></li>
+            <li><svg class="ico"><use href="#i-check"/></svg><span><b>Markdown report</b> with estimated monthly saving per finding, ranked by impact.</span></li>
+            <li><svg class="ico"><use href="#i-check"/></svg><span><b>Remediation narrative</b>: the top five actions in plain English, with the exact commands.</span></li>
+          </ul>
         </div>
+      </div>
+      <div class="tiers">
+        <div class="tier"><span class="sublabel">The fee</span><p class="tier-price">{{ hugo.Data.pricing.sharePercent }}% <span>of the identified yearly waste, {{ hugo.Data.pricing.vat }}</span></p><p>Identified waste is {{ hugo.Data.pricing.basis }}.</p></div>
+        <div class="tier"><span class="sublabel">Minimum fee</span><p class="tier-price">€{{ lang.FormatNumber 0 hugo.Data.pricing.minFee }} <span>{{ hugo.Data.pricing.vat }}</span></p><p>Applies when {{ hugo.Data.pricing.sharePercent }}% of the identified waste comes to less. Read-only access, fixed scope, report within {{ hugo.Data.pricing.turnaround }}.</p></div>
+      </div>
+      <div class="report">
+        <div class="excerpt">
+          <h3>Top findings · estimated savings €1,840/month</h3>
+          <p class="sub">Example report. The first 2 findings are shown; the total covers the full report.</p>
+          <ol>
+            <li><b>Three unattached EBS volumes (gp2, 500GB total), €47/month.</b> Not attached to any instance and untouched for 45+ days. Safe to snapshot and delete unless tied to a manual backup process.</li>
+            <li><b>NAT Gateway eu-west-1a, €127/month, 0.2GB/day throughput.</b> Carrying almost no traffic, so it is a candidate for consolidation.</li>
+          </ol>
+        </div>
+        <div class="start">
+          <div>
+            <h3>Have me run it</h3>
+            <p>I run the analysis, validate every finding against your context, and deliver the report with a prioritised remediation plan.</p>
+            <p><a href="#estimate">Request the audit <svg class="ico"><use href="#i-arrow"/></svg></a></p>
+          </div>
+          <div>
+            <h3>Run it yourself</h3>
+            <p>The toolkit is open source and uses a read-only IAM policy. No data ever leaves your account.</p>
+            <p><a href="https://github.com/Botoxx/aws-finops-toolkit">aws-finops-toolkit on GitHub <svg class="ico"><use href="#i-ext"/></svg></a></p>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<section id="courses" class="section">
-    <div class="container">
-        <pre class="rule" aria-hidden="true">├─ §05 ─ CERTS & COURSES ───────────────────────────────────────────────────┤</pre>
-        <div class="section-content">
-            {{ with .Site.GetPage "/courses" }}{{ .Content }}{{ end }}
-        </div>
+<section class="band" id="work">
+  <div class="wrap">
+    <p class="side" aria-hidden="true">experience</p>
+    <div class="content">
+      <h2 class="statement">From telecom scale to AI in production.</h2>
+      <p class="intro">Four years running CI/CD and Kubernetes for a cloud-native IP Multimedia Subsystem serving millions of users, then cloud migration and LLM systems. Select a role to read it, or open the <a href="/cv/">full CV</a> with stack, certifications and education.</p>
+      <div class="tl-wrap"><svg id="timeline" viewBox="0 0 900 272" role="group" aria-label="Career timeline, 2017 to today"></svg></div>
+      <p class="tl-hint">Bars are to scale. A dashed outline marks education; the amber line is today.</p>
+      <ol class="tl-list" id="tl-list" aria-label="Roles"></ol>
+      <div class="role-card" id="role-card" aria-live="polite"></div>
     </div>
+  </div>
 </section>
 
+<section class="band" id="writing">
+  <div class="wrap">
+    <p class="side" aria-hidden="true">writing</p>
+    <div class="content">
+      <h2 class="statement">Notes from shipping cloud and AI systems.</h2>
+      <p class="intro">Small, specific things learned on real projects, the opposite of a tutorial. Also available as an <a href="/blog/index.xml">RSS feed</a>.</p>
+      <ul class="posts">
+        {{- range first 5 (where site.RegularPages "Type" "blog") }}
+        <li><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time><div><a class="t" href="{{ .RelPermalink }}">{{ .Title }}</a>{{ with .Params.summary }}<p>{{ . }}</p>{{ end }}</div><span class="tags">{{ range .Params.tags }}#{{ . }} {{ end }}</span></li>
+        {{- end }}
+      </ul>
+      <p class="page-links"><a href="/blog/">All posts <svg class="ico"><use href="#i-arrow"/></svg></a></p>
+      <div class="pair">
+        <div class="panel">
+          <h3>Each S3 signal that lied, and the second check that caught it</h3>
+          <p>The second check must see the state some other way, so it can't share the first one's bug.</p>
+          <div class="tbl-wrap">
+            <table class="checks">
+              <thead><tr><th scope="col">Looked like proof</th><th scope="col">Second check</th></tr></thead>
+              <tbody>
+                <tr><td>delete-bucket</td><td>list-buckets, polled until head-bucket agrees</td></tr>
+                <tr><td>delete-objects</td><td>list-object-versions</td></tr>
+                <tr><td>--query length()</td><td>--output json | jq length</td></tr>
+                <tr><td>detach-user-policy</td><td>list-attached-user-policies AND list-attached-group-policies</td></tr>
+                <tr><td>put-bucket-policy</td><td>a real request from a principal you didn't enumerate</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <a class="more" href="/blog/s3-success-signals-lie/">Read the post <svg class="ico"><use href="#i-ext"/></svg></a>
+        </div>
+        <div class="panel">
+          <h3>Three memories for a long agent build</h3>
+          <p>Seven weeks, one AWS proof of concept, 122 pull requests, driven end to end through an AI agent.</p>
+          <div class="mem">
+            <div><b>WHY</b><span>The vault: architecture and decisions, provenance-anchored. The layer that survives handover.</span></div>
+            <div><b>HOW</b><span>A live code graph: functions, routes, call chains, queried before reading files.</span></div>
+            <div><b>SCARS</b><span>One-fact files of the agent's own mistakes, reloaded every session. 61 by the end.</span></div>
+          </div>
+          <blockquote>The model does not get smarter across a project. What compounds is memory.</blockquote>
+          <a class="more" href="/blog/the-build-that-remembered/">Read the post <svg class="ico"><use href="#i-ext"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script type="application/json" id="site-data">{{ $data | jsonify | safeJS }}</script>
 {{ end }}
