@@ -8,7 +8,7 @@ This is a personal portfolio/resume website built with Hugo static site generato
 
 ## Hugo Setup
 
-**Hugo Version:** 0.145.0 (extended version used in CI/CD)
+**Hugo Version:** 0.168.0 extended (CI pins `HUGO_VERSION` in `.github/workflows/gh-pages.yml`; keep local and CI in step)
 
 The site uses a custom theme with layouts in `layouts/` and does NOT use Git submodules for themes. All templates and styling are maintained directly in this repository.
 
@@ -61,40 +61,34 @@ All content lives in `content/` with each section as a standalone page using `in
 - `content/summary/index.md` - Professional summary (if applicable)
 
 **Layout Architecture:**
-The site uses a single-page layout with anchor-linked sections:
-- `layouts/index.html` - Main homepage template that pulls in all content sections
-- `layouts/_default/single.html` - Default single page template
-- `layouts/partials/` - Reusable components:
-  - `head.html` - Meta tags, styles, Font Awesome CDN
-  - `header.html` - Profile section with name, title, and social links
-  - `nav.html` - Sticky navigation with anchor links to sections
-  - `footer.html` - Footer content
+- `layouts/index.html` - Homepage: hero with the interactive shell, waste estimator with request draft, services, audit, timeline, writing, stack. Repeated items come from `data/` (`services.yaml`, `roles.yaml`, `stack.yaml`) and the latest blog posts; they are passed to `home.js` as JSON in `#site-data`
+- `layouts/_default/single.html`, `layouts/blog/*.html`, `layouts/_default/{taxonomy,terms}.html` - Inner pages (`.page` + `.prose`)
+- `layouts/partials/`:
+  - `head.html` - Meta tags, font preloads, fingerprinted `site.css`
+  - `header.html` - Sticky top bar: brand, section links, theme toggle, "Request an audit"
+  - `footer.html` - Contact block (copy-address button), links, colophon
+  - `icons.html` - SVG symbol sprite
 
-**Static Assets:**
-- `static/css/style.css` - All custom styling with CSS variables and animations
-- `static/css/normalize.css` - CSS reset/normalization
-- `static/js/main.js` - Client-side JavaScript (back-to-top button, smooth scrolling)
+**Assets:**
+- `assets/css/site.css` - All styling: colour tokens (light default, `data-theme` and OS preference for dark), self-hosted `@font-face`, homepage, prose, code colours (chroma classes)
+- `assets/js/site.js` - Every page: theme toggle, copy address. `assets/js/home.js` - Homepage only: flow field, estimator, timeline, shell. Bundled with Hugo `js.Build` (esbuild, no Node); plain JS because esbuild strips TypeScript types without checking them
+- `static/fonts/` - Self-hosted Unbounded and IBM Plex (no third-party font requests)
 - `static/favicon.ico` - Site favicon
 
 ### Styling System
 
-The site uses CSS custom properties (variables) defined in `:root` for theming:
-- Color scheme: `--primary-color`, `--secondary-color`, `--accent-color`
-- Consistent transitions and shadows
-- Responsive design with breakpoints at 768px and 480px
-- Print-specific styles for resume printing
-- Animation system using keyframes for fadeIn, slideInUp, slideInLeft, and pulse effects
+Colour and type tokens live on `:root` in `assets/css/site.css`; light values are the default and dark values are applied for `[data-theme="dark"]` and for `prefers-color-scheme: dark` without an explicit light theme. Breakpoints at 1100px, 960px and 760px. One motion moment (the hero flow field), reduced-motion respected throughout.
 
 ### Navigation Pattern
 
-Navigation uses hash-based anchor links (`#about`, `#experience`, etc.) with conditional logic in `nav.html` to handle both homepage and subpage contexts using Hugo's `.IsHome` template variable.
+The top bar links to homepage anchors (`#services`, `#audit`, `#work`, `#estimate`), prefixed with `/` on inner pages via `.IsHome` in `header.html`; "Writing" goes to `/blog/`.
 
 ## Deployment
 
 **Automatic Deployment:**
 - GitHub Actions workflow: `.github/workflows/gh-pages.yml`
 - Triggers on push to `main` branch
-- Uses Hugo 0.145.0 extended version
+- Uses Hugo extended at the pinned `HUGO_VERSION`
 - Builds with `--gc --minify` flags
 - Deploys to GitHub Pages from `public/` directory
 
@@ -106,14 +100,13 @@ If needed, build locally and the `public/` directory contains the deployable sta
 When updating content sections:
 1. Each section's `index.md` has frontmatter with `title`, `date`, and `draft` status
 2. Use Markdown for formatting - HTML is also supported (goldmark renderer has `unsafe = true`)
-3. The site pulls content using `.Site.GetPage` in the main layout
-4. List items in content use Font Awesome icons automatically via CSS `::before` pseudo-elements
+3. Standalone pages (`/experience/`, `/skills/`, …) render their own `index.md`; the homepage reads `data/*.yaml`, so update both when facts change
+4. Blog posts need `date`, `summary` and `tags` in frontmatter; the homepage and the shell list the 5 most recent
 
 ## Key Dependencies
 
 - Hugo Extended (required for SCSS processing if added later)
-- Font Awesome 5 (loaded via CDN in head partial)
-- Google Fonts: 'Open Sans' and 'Roboto' (loaded via CDN)
+- No CDN dependencies: fonts and icons are self-hosted
 - No Node.js dependencies (package.json does not exist)
 
 ## Site Parameters
