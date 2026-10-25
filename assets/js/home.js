@@ -1,75 +1,324 @@
-// Homepage: hero flow field, waste estimator with request draft, career timeline, shell.
+// Homepage: hero scene, waste estimator with request draft, career timeline, shell.
 import { copyText } from './lib/copy.js';
 
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
+  const root = document.documentElement;
   const data = JSON.parse($('#site-data').textContent);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const eur = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
   const esc = s => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const EMAIL = data.email, SPEND_MIN = 20000, SPEND_MAX = 200000;
 
-  /* ---------- hero flow field ---------- */
-  (() => {
-    const cv = $('#field'), ctx = cv.getContext('2d');
-    let w = 0, h = 0, parts = [], raf = 0, t = 0, visible = true, ready = false;
-    const mouse = { x: -9999, y: -9999 }, col = {};
-    const readColors = () => {
-      const cs = getComputedStyle(document.documentElement);
-      col.bg = cs.getPropertyValue('--bg').trim();
-      col.acc = cs.getPropertyValue('--accent').trim();
-      col.amb = cs.getPropertyValue('--amber').trim();
+  /* ---------- hero scene: an afternoon block where one window is broken ---------- */
+  // World units: ground at y = 0, up is negative. Everything static is painted once per size or theme.
+  const findings = [
+    { win: [1, 2], cost: 127, what: 'NAT gateway, eu-west-1a', why: '0.2 GB a day goes through it' },
+    { win: [3, 3], cost: 47, what: '3 unattached EBS volumes', why: 'gp2, 500 GB, untouched 45+ days' },
+    { win: [0, 1], cost: 309, what: 'm5.2xlarge in staging', why: 'CPU under 5% for 7 days' }
+  ];
+  const scene = (() => {
+    const cv = $('#scene'), ctx = cv.getContext('2d'), box = $('#scene-box'), tag = $('#finding'), title = $('.title');
+    const bg = document.createElement('canvas'), b = bg.getContext('2d');
+    let w = 0, h = 0, dpr = 1, s = 1, W = 0, gy = 0, L = null, drops = [], splashes = [], shards = [], frozen = [], blocks = [];
+    let zone = null, fi = 0, raf = 0, visible = true, tearAt = 0, tearY = 0, hopAt = 0, paused = false, last = 0;
+    const col = {};
+    const KEYS = ['pencil', 'sky-top', 'sky-low', 'sun', 'cloud', 'cloud-sh', 'far', 'far-2', 'wall', 'wall-sh', 'wall-dk', 'trim', 'glass', 'glass-hi', 'street', 'curb', 'weed', 'metal', 'lit', 'rain', 'glitch-hi', 'rust', 'term-bg'];
+    const mulberry = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    const readColors = () => { const cs = getComputedStyle(root); KEYS.forEach(k => { col[k] = cs.getPropertyValue(`--${k}`).trim(); }); };
+    const world = c => c.setTransform(dpr * s, 0, 0, dpr * s, 0, dpr * gy);
+    const px = c => c.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const layout = () => {
+      const phone = w < 760;
+      gy = Math.round(h * (phone ? 0.9 : 0.86));
+      s = phone ? Math.min(h / 640, w / 740) : h / 700;
+      W = w / s;
+      const B = phone ? W - 470 : W - 600, FW = 340, FH = 460, floors = 5, cols = 4, fh = FH / floors, cw = FW / cols;
+      const r = mulberry(11);
+      const lit = new Set(Array.from({ length: 4 }, () => `${Math.floor(r() * 4)},${Math.floor(r() * cols)}`));
+      L = { phone, B, FW, FH, SW: 80, floors, cols, fh, cw, lit,
+        win: (f, c) => ({ x: B + c * cw + 17, y: -FH + f * fh + 22, w: cw - 34, h: fh - 42 }),
+        pole: B + FW + 80 + 70, tank: phone ? B + 228 : B + 52, hut: phone ? B + 24 : B + 196, ant: phone ? B + 300 : B + 296, shop: { x: B - 262, w: 240, h: 200 }, vend: { x: B - 236, y: -118, w: 62, h: 118 },
+        street: (h - gy) / s };
     };
-    const spawn = p => { p.x = Math.random() * w; p.y = Math.random() * h; p.life = 120 + Math.random() * 260; p.amber = Math.random() < 0.05; return p; };
-    // Sizes come from ResizeObserver, which reports after layout, so setup never forces a reflow.
-    const setup = (cw, ch) => {
-      const dpr = Math.min(2, devicePixelRatio || 1);
-      w = cw; h = ch;
-      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.fillStyle = col.bg; ctx.fillRect(0, 0, w, h);
-      parts = Array.from({ length: Math.min(700, Math.floor((w * h) / 1500)) }, () => spawn({}));
+
+    // hand-inked lines: slight wobble, and edges that overshoot their corners
+    let R = Math.random;
+    const jl = (c, pts, close) => { c.beginPath(); pts.forEach(([x, y], i) => { const jx = x + (R() - .5) * 1.1, jy = y + (R() - .5) * 1.1; i ? c.lineTo(jx, jy) : c.moveTo(jx, jy); }); if (close) c.closePath(); c.stroke(); };
+    const edge = (c, x1, y1, x2, y2, o = 2.5) => { const d = Math.hypot(x2 - x1, y2 - y1) || 1, ux = (x2 - x1) / d * o, uy = (y2 - y1) / d * o; jl(c, [[x1 - ux, y1 - uy], [x2 + ux, y2 + uy]]); };
+    const box4 = (c, x, y, bw, bh, o) => { edge(c, x, y, x + bw, y, o); edge(c, x + bw, y, x + bw, y + bh, o); edge(c, x + bw, y + bh, x, y + bh, o); edge(c, x, y + bh, x, y, o); };
+    const poly = (c, pts) => { c.beginPath(); pts.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); c.closePath(); };
+
+    const cloud = (c, cx, cy, k, seed) => {
+      const r = mulberry(seed), puffs = Array.from({ length: 9 }, (_, i) => {
+        const t = i / 8 - .5; return { x: cx + t * 260 * k + (r() - .5) * 30 * k, y: cy - (1 - Math.abs(t) * 1.7) * 46 * k - r() * 22 * k, r: (34 + r() * 30) * k * (1 - Math.abs(t) * .7) };
+      });
+      const shape = () => { c.beginPath(); puffs.forEach(p => { c.moveTo(p.x + p.r, p.y); c.arc(p.x, p.y, p.r, 0, Math.PI * 2); }); c.rect(cx - 150 * k, cy - 10 * k, 300 * k, 14 * k); };
+      c.save(); shape(); c.fillStyle = col['cloud-sh']; c.fill(); c.clip();
+      c.fillStyle = col.cloud; c.beginPath(); puffs.forEach(p => { c.moveTo(p.x - 8 * k + p.r * .9, p.y - 12 * k); c.arc(p.x - 8 * k, p.y - 12 * k, p.r * .9, 0, Math.PI * 2); }); c.fill();
+      c.restore();
     };
-    const angleAt = (x, y) => {
-      let a = Math.sin(x * 0.0021 + t * 0.00011) * 1.6 + Math.cos(y * 0.0027 - t * 0.00009) * 1.6 + Math.sin((x + y) * 0.0009) * 1.1;
-      const dx = x - mouse.x, dy = y - mouse.y, d2 = dx * dx + dy * dy;
-      if (d2 < 28900) a += (1 - Math.sqrt(d2) / 170) * 2.4;
-      return a;
-    };
-    const step = () => {
-      t += 16;
-      ctx.globalAlpha = 0.07; ctx.fillStyle = col.bg; ctx.fillRect(0, 0, w, h);
-      ctx.globalAlpha = 0.42; ctx.lineWidth = 1;
-      const acc = new Path2D(), amb = new Path2D();
-      for (const p of parts) {
-        const a = angleAt(p.x, p.y), nx = p.x + Math.cos(a) * 0.95, ny = p.y + Math.sin(a) * 0.95;
-        const path = p.amber ? amb : acc;
-        path.moveTo(p.x, p.y); path.lineTo(nx, ny);
-        p.x = nx; p.y = ny;
-        if (--p.life < 0 || nx < 0 || ny < 0 || nx > w || ny > h) spawn(p);
+
+    const paintStatic = () => {
+      bg.width = cv.width; bg.height = cv.height; R = mulberry(7);
+      const c = b, { B, FW, FH, SW, fh, cw } = L, top = -gy / s;
+      px(c);
+      const g = c.createLinearGradient(0, 0, 0, gy); g.addColorStop(0, col['sky-top']); g.addColorStop(1, col['sky-low']);
+      c.fillStyle = g; c.fillRect(0, 0, w, h);
+      const sun = c.createRadialGradient(w * .3, gy - 300 * s, 0, w * .3, gy - 300 * s, 480 * s);
+      sun.addColorStop(0, col.sun); sun.addColorStop(1, 'transparent'); c.globalAlpha = .6; c.fillStyle = sun; c.fillRect(0, 0, w, h); c.globalAlpha = 1;
+      world(c);
+      cloud(c, W * .2, top + 120, 1.1, 3); cloud(c, W * .58, top + 70, .8, 9); cloud(c, W * .9, top + 170, .65, 21);
+      // two depths of city
+      const r = mulberry(13);
+      c.fillStyle = col.far;
+      for (let x = -20; x < W; ) { const bw = 40 + r() * 90, bh = 130 + r() * 190; c.fillRect(x, -bh, bw, bh);
+        if (r() < .3) { c.fillRect(x + bw * .3, -bh - 22, 14, 22); } if (r() < .25) { c.fillRect(x + bw * .7, -bh - 40, 2, 40); } x += bw + 3; }
+      for (let x = -20; x < W; ) { const bw = 50 + r() * 80, bh = 60 + r() * 120; c.fillStyle = col['far-2']; c.fillRect(x, -bh, bw, bh);
+        c.fillStyle = col.far; for (let wy = -bh + 10; wy < -12; wy += 14) for (let wx = x + 7; wx < x + bw - 8; wx += 12) if (r() < .55) c.fillRect(wx, wy, 5, 6);
+        x += bw + 4; }
+      // street and kerb
+      c.fillStyle = col.street; c.fillRect(-10, 0, W + 20, L.street + 10);
+      c.fillStyle = col.curb; c.fillRect(-10, 0, W + 20, 12);
+      c.strokeStyle = col.pencil; c.lineWidth = 1.4; edge(c, -10, 0, W + 10, 0, 0); edge(c, -10, 12, W + 10, 12, 0);
+      c.globalAlpha = .5; c.strokeStyle = col.trim; c.lineWidth = 3; c.setLineDash([40, 30]); c.beginPath(); c.moveTo(-10, L.street * .62); c.lineTo(W, L.street * .62); c.stroke(); c.setLineDash([]); c.globalAlpha = 1;
+
+      // shop house with shutter and awning
+      const S = L.shop;
+      c.fillStyle = col.wall; c.fillRect(S.x, -S.h, S.w, S.h);
+      c.fillStyle = col['wall-dk']; c.globalAlpha = .25; c.fillRect(S.x, -S.h, S.w, 12); c.globalAlpha = 1;
+      c.fillStyle = col.curb; c.fillRect(S.x + 90, -104, 132, 104);
+      c.strokeStyle = col.pencil; c.lineWidth = .7; c.globalAlpha = .45; for (let y = -100; y < 0; y += 5) { c.beginPath(); c.moveTo(S.x + 90, y); c.lineTo(S.x + 222, y); c.stroke(); } c.globalAlpha = 1;
+      for (let i = 0; i < 10; i++) { c.fillStyle = i % 2 ? col.trim : col.rust; poly(c, [[S.x + 80 + i * 15, -128], [S.x + 95 + i * 15, -128], [S.x + 99 + i * 15.6, -108], [S.x + 82 + i * 15.6, -108]]); c.fill(); }
+      c.fillStyle = col.trim; c.fillRect(S.x + 96, -170, 112, 28);
+      c.fillStyle = col.rust; c.fillRect(S.x + 108, -161, 50, 4); c.fillRect(S.x + 108, -153, 78, 4);
+      c.fillStyle = col.glass; c.fillRect(S.x + 22, -186, 50, 44);
+      c.fillStyle = col.curb; c.fillRect(S.x + 26, -80, 36, 26);
+      c.strokeStyle = col.pencil; c.lineWidth = 1.6;
+      box4(c, S.x, -S.h, S.w, S.h, 3); box4(c, S.x + 90, -104, 132, 104, 0); box4(c, S.x + 96, -170, 112, 28, 2); box4(c, S.x + 22, -186, 50, 44, 2); box4(c, S.x + 26, -80, 36, 26, 1);
+      jl(c, [[S.x + 80, -128], [S.x + 230, -128], [S.x + 238, -108], [S.x + 82, -108]], true);
+      c.beginPath(); c.arc(S.x + 44, -67, 8, 0, Math.PI * 2); c.lineWidth = 1; c.stroke();
+      edge(c, S.x + 47, -186, S.x + 47, -142, 0);
+      c.lineWidth = 1.2; edge(c, S.x + 200, -200, S.x + 200, -250, 0); edge(c, S.x + 186, -236, S.x + 214, -236, 0); edge(c, S.x + 190, -226, S.x + 210, -226, 0);
+
+      // main block: shadow side, then the lit front
+      c.fillStyle = col['wall-sh']; poly(c, [[B + FW, -FH], [B + FW + SW, -FH + 16], [B + FW + SW, -4], [B + FW, 0]]); c.fill();
+      for (let f = 0; f < L.floors; f++) {
+        const y0 = -FH + f * fh, y1 = y0 + fh, at = (x, y) => y + (x - B - FW) / SW * (y < -FH / 2 ? 16 : 16) * (1 + y / FH);
+        c.fillStyle = col['wall-dk']; poly(c, [[B + FW + 24, at(B + FW + 24, y0 + 24)], [B + FW + 56, at(B + FW + 56, y0 + 24)], [B + FW + 56, at(B + FW + 56, y1 - 22)], [B + FW + 24, at(B + FW + 24, y1 - 22)]]); c.fill();
+        c.strokeStyle = col.pencil; c.lineWidth = 1; if (f) edge(c, B + FW, y0, B + FW + SW, at(B + FW + SW, y0), 0);
       }
-      ctx.strokeStyle = col.acc; ctx.stroke(acc);
-      ctx.strokeStyle = col.amb; ctx.stroke(amb);
-      ctx.globalAlpha = 1;
+      c.fillStyle = col.wall; c.fillRect(B, -FH, FW, FH);
+      // weathering streaks and slab bands
+      for (let f = 0; f < L.floors; f++) for (let k = 0; k < L.cols; k++) {
+        const wr = L.win(f, k), st = c.createLinearGradient(0, wr.y + wr.h, 0, wr.y + wr.h + 40);
+        st.addColorStop(0, col['wall-dk']); st.addColorStop(1, 'transparent'); c.globalAlpha = .22; c.fillStyle = st; c.fillRect(wr.x + 4, wr.y + wr.h, wr.w - 8, 40); c.globalAlpha = 1;
+      }
+      for (let f = 1; f < L.floors; f++) { const y = -FH + f * fh; c.fillStyle = col['wall-dk']; c.globalAlpha = .3; c.fillRect(B, y + 6, FW, 10); c.globalAlpha = 1; c.fillStyle = col.trim; c.fillRect(B, y, FW, 6); }
+      // windows
+      for (let f = 0; f < L.floors; f++) for (let k = 0; k < L.cols; k++) {
+        if (f === 4 && k === 1) continue;
+        const wr = L.win(f, k), lit = L.lit.has(`${f},${k}`);
+        c.fillStyle = col.trim; c.fillRect(wr.x - 4, wr.y - 4, wr.w + 8, wr.h + 8);
+        if (lit) { c.fillStyle = col.lit; c.fillRect(wr.x, wr.y, wr.w, wr.h); c.fillStyle = col['wall-dk']; c.globalAlpha = .25; c.fillRect(wr.x, wr.y, wr.w * .42, wr.h); c.globalAlpha = 1; }
+        else { const gg = c.createLinearGradient(wr.x, wr.y, wr.x + wr.w, wr.y + wr.h); gg.addColorStop(0, col['glass-hi']); gg.addColorStop(.55, col.glass); gg.addColorStop(1, col.glass); c.fillStyle = gg; c.fillRect(wr.x, wr.y, wr.w, wr.h);
+          c.fillStyle = col['glass-hi']; c.globalAlpha = .5; poly(c, [[wr.x + wr.w * .55, wr.y], [wr.x + wr.w * .72, wr.y], [wr.x + wr.w * .3, wr.y + wr.h], [wr.x + wr.w * .13, wr.y + wr.h]]); c.fill(); c.globalAlpha = 1; }
+        c.fillStyle = col.trim; c.fillRect(wr.x - 7, wr.y + wr.h + 3, wr.w + 14, 5);
+        c.strokeStyle = col.pencil; c.lineWidth = 1.3; box4(c, wr.x - 4, wr.y - 4, wr.w + 8, wr.h + 8, 1.5); c.lineWidth = .9; box4(c, wr.x, wr.y, wr.w, wr.h, 0); edge(c, wr.x + wr.w / 2, wr.y, wr.x + wr.w / 2, wr.y + wr.h, 0);
+        edge(c, wr.x - 7, wr.y + wr.h + 8, wr.x + wr.w + 7, wr.y + wr.h + 8, 0);
+      }
+      // entrance with canopy and lamp
+      { const dx = B + cw + 18, dw = cw - 36, dy = -74;
+        c.fillStyle = col['wall-dk']; c.fillRect(dx, dy, dw, 74); c.fillStyle = col.glass; c.fillRect(dx + 4, dy + 6, dw / 2 - 6, 64); c.fillRect(dx + dw / 2 + 2, dy + 6, dw / 2 - 6, 64);
+        c.fillStyle = col.trim; c.fillRect(dx - 14, dy - 12, dw + 28, 7); c.fillStyle = col['wall-dk']; c.globalAlpha = .35; c.fillRect(dx - 14, dy - 5, dw + 28, 12); c.globalAlpha = 1;
+        c.fillStyle = col.lit; c.beginPath(); c.arc(dx + dw + 10, dy + 14, 4, 0, Math.PI * 2); c.fill();
+        c.strokeStyle = col.pencil; c.lineWidth = 1.3; box4(c, dx, dy, dw, 74, 1); box4(c, dx - 14, dy - 12, dw + 28, 7, 2); }
+      // balconies with railings, laundry, an air conditioner and a plant
+      for (const f of [1, 2, 3]) {
+        const x0 = B + 8, x1 = B + 2 * cw - 8, sy = -FH + (f + 1) * fh - 8;
+        c.fillStyle = col['wall-dk']; c.globalAlpha = .18; c.fillRect(x0, sy - 34, x1 - x0, 34); c.globalAlpha = 1;
+        if (f === 2) { c.strokeStyle = col.pencil; c.lineWidth = .8; edge(c, x0 + 6, sy - 58, x1 - 6, sy - 56, 0);
+          [col.trim, col['glass-hi'], col.rust, col.cloud, col.trim].forEach((cc, i) => { const lx = x0 + 18 + i * 28; c.fillStyle = cc; poly(c, [[lx, sy - 57], [lx + 16, sy - 57], [lx + 17, sy - 30], [lx - 1, sy - 31]]); c.fill(); c.lineWidth = .8; c.stroke(); }); }
+        if (f === 3) { c.fillStyle = col.curb; c.fillRect(x1 - 46, sy - 30, 38, 26); c.strokeStyle = col.pencil; c.lineWidth = 1; box4(c, x1 - 46, sy - 30, 38, 26, 0); c.beginPath(); c.arc(x1 - 27, sy - 17, 8, 0, Math.PI * 2); c.stroke(); }
+        if (f === 1) { c.fillStyle = col.rust; c.fillRect(x0 + 12, sy - 18, 16, 14); c.fillStyle = col.weed; [[-4, -26, 9], [6, -32, 10], [14, -24, 8], [2, -40, 7]].forEach(([dx, dy, rr]) => { c.beginPath(); c.ellipse(x0 + 20 + dx, sy + dy, rr, rr * .6, dx / 20, 0, Math.PI * 2); c.fill(); }); }
+        c.strokeStyle = col.pencil; c.lineWidth = .9; for (let x = x0 + 4; x < x1 - 2; x += 7) edge(c, x, sy - 32, x, sy, 0);
+        c.lineWidth = 2.4; edge(c, x0, sy - 33, x1, sy - 33, 2);
+        c.fillStyle = col.trim; c.fillRect(x0 - 4, sy, x1 - x0 + 8, 8); c.fillStyle = col['wall-dk']; c.globalAlpha = .35; c.fillRect(x0 - 4, sy + 8, x1 - x0 + 8, 10); c.globalAlpha = 1;
+        c.lineWidth = 1.3; box4(c, x0 - 4, sy, x1 - x0 + 8, 8, 2);
+      }
+      // downpipe
+      c.fillStyle = col.metal; c.fillRect(B + FW - 14, -FH, 6, FH); c.strokeStyle = col.pencil; c.lineWidth = 1; box4(c, B + FW - 14, -FH, 6, FH, 0);
+      for (let y = -FH + 30; y < 0; y += 46) edge(c, B + FW - 17, y, B + FW - 5, y, 0);
+      // roof: parapet, water tank on legs, stair hut, antenna
+      const { tank: T, hut: H, ant: A } = L;
+      c.fillStyle = col.trim; c.fillRect(B - 5, -FH - 10, FW + 10, 10);
+      c.fillStyle = col['wall-sh']; c.fillRect(H, -FH - 50, 60, 40); c.fillStyle = col['wall-dk']; c.fillRect(H + 14, -FH - 40, 18, 30);
+      c.strokeStyle = col.pencil; c.lineWidth = 1.8; edge(c, B + FW, -FH - 10, B + FW + SW, -FH + 8, 1);
+      box4(c, B - 5, -FH - 10, FW + 10, 10, 3); c.lineWidth = 1.4; box4(c, H, -FH - 50, 60, 40, 2);
+      c.lineWidth = 1.6; [T + 10, T + 76].forEach(x => edge(c, x, -FH - 10, x, -FH - 44, 0)); c.lineWidth = 1; edge(c, T + 10, -FH - 12, T + 76, -FH - 42, 0); edge(c, T + 76, -FH - 12, T + 10, -FH - 42, 0);
+      c.fillStyle = col.curb; c.fillRect(T, -FH - 96, 86, 52); c.beginPath(); c.ellipse(T + 43, -FH - 96, 43, 8, 0, 0, Math.PI * 2); c.fill();
+      c.fillStyle = col['wall-dk']; c.globalAlpha = .3; c.fillRect(T + 58, -FH - 96, 28, 52); c.globalAlpha = 1;
+      c.lineWidth = 1.5; box4(c, T, -FH - 96, 86, 52, 2); c.beginPath(); c.ellipse(T + 43, -FH - 96, 43, 8, 0, 0, Math.PI * 2); c.stroke();
+      c.lineWidth = .8; [-80, -66].forEach(dy => edge(c, T, -FH + dy, T + 86, -FH + dy, 0));
+      c.lineWidth = 1.4; edge(c, A, -FH - 10, A, -FH - 120, 0); c.lineWidth = 1.1;
+      [[-112, 36], [-98, 28], [-84, 20]].forEach(([dy, ww]) => edge(c, A - ww / 2, -FH + dy, A + ww / 2, -FH + dy, 0));
+      c.lineWidth = 1.8; box4(c, B, -FH, FW, FH, 4); edge(c, B + FW + SW, -FH + 16, B + FW + SW, -4, 2); edge(c, B + FW, 0, B + FW + SW, -4, 2);
+      // cast shadow on the street
+      c.fillStyle = col.pencil; c.globalAlpha = .13; poly(c, [[B + FW + SW, -4], [B + FW + SW + 150, 30], [B + FW + 40, 30], [B + FW, 0]]); c.fill(); c.globalAlpha = 1;
+      // telegraph pole on the right; its wires run into the block, never across the page
+      { const P = L.pole;
+        c.fillStyle = col.metal; c.fillRect(P - 5, -560, 10, 572);
+        c.fillStyle = col.curb; c.fillRect(P + 8, -452, 28, 46); c.beginPath(); c.ellipse(P + 22, -452, 14, 4, 0, 0, Math.PI * 2); c.fill();
+        c.strokeStyle = col.pencil; c.lineWidth = 1.6; box4(c, P - 5, -560, 10, 572, 0); box4(c, P + 8, -452, 28, 46, 1);
+        c.lineWidth = 3; edge(c, P - 40, -530, P + 40, -530, 0); edge(c, P - 30, -500, P + 30, -500, 0);
+        c.lineWidth = 2; edge(c, P, -380, P - 46, -392, 0); c.fillStyle = col.metal; c.fillRect(P - 58, -396, 18, 8); c.fillStyle = col.lit; c.fillRect(P - 56, -388, 14, 3);
+        c.lineWidth = 1.1;
+        [[P - 38, -530, B + FW + SW, -FH + 40, 40], [P - 20, -530, B + FW + SW, -FH + 70, 55], [P - 28, -500, B + FW + SW, -FH + 120, 30], [P + 38, -530, W + 30, -500, 50], [P + 22, -500, W + 30, -462, 44]]
+          .forEach(([x0, y0, x1, y1, sag]) => { c.beginPath(); c.moveTo(x0, y0); c.quadraticCurveTo((x0 + x1) / 2, Math.max(y0, y1) + sag, x1, y1); c.stroke(); });
+        c.lineWidth = 2; c.beginPath(); c.moveTo(P + 22, -406); c.quadraticCurveTo(P + 40, -300, P + 6, -260); c.stroke(); }
+      // vending machine
+      { const V = L.vend;
+        const glow = c.createRadialGradient(V.x + V.w / 2, 4, 0, V.x + V.w / 2, 4, 120); glow.addColorStop(0, col.lit); glow.addColorStop(1, 'transparent');
+        c.globalAlpha = .35; c.fillStyle = glow; c.fillRect(V.x - 90, -40, V.w + 180, 90); c.globalAlpha = 1;
+        c.fillStyle = col.trim; c.fillRect(V.x, V.y, V.w, V.h); c.fillStyle = col.rust; c.fillRect(V.x, V.y, V.w, 12);
+        c.fillStyle = col.lit; c.fillRect(V.x + 6, V.y + 18, V.w - 12, 50);
+        const pc = [col.glass, col.rust, col.weed, col['glass-hi'], col.metal];
+        for (let rr = 0; rr < 3; rr++) for (let k = 0; k < 5; k++) { c.fillStyle = pc[(rr + k) % 5]; c.fillRect(V.x + 10 + k * 9.4, V.y + 22 + rr * 16, 6, 11); }
+        c.fillStyle = col.metal; c.fillRect(V.x + 8, V.y + 92, V.w - 16, 14); c.fillRect(V.x + V.w - 16, V.y + 74, 6, 10);
+        c.strokeStyle = col.pencil; c.lineWidth = 1.6; box4(c, V.x, V.y, V.w, V.h, 2); c.lineWidth = 1; box4(c, V.x + 6, V.y + 18, V.w - 12, 50, 0); box4(c, V.x + 8, V.y + 92, V.w - 16, 14, 0);
+        // the cat's body; its tail and eyes move, so they are drawn per frame
+        const cx = V.x + 36, cy = V.y;
+        c.fillStyle = col.pencil; c.beginPath(); c.ellipse(cx, cy - 9, 11, 9, 0, 0, Math.PI * 2); c.ellipse(cx - 8, cy - 15, 7, 9, -.3, 0, Math.PI * 2); c.arc(cx - 11, cy - 26, 6.5, 0, Math.PI * 2); c.fill();
+        poly(c, [[cx - 17, cy - 29], [cx - 16, cy - 38], [cx - 12, cy - 31]]); c.fill(); poly(c, [[cx - 9, cy - 31], [cx - 6, cy - 38], [cx - 5, cy - 29]]); c.fill(); }
+      // weeds along the walls
+      c.strokeStyle = col.weed; c.lineWidth = 1.4;
+      const tuft = x => { for (let i = 0; i < 6; i++) { const a = (R() - .5) * 1.2, len = 8 + R() * 14; c.beginPath(); c.moveTo(x + i * 2, 0); c.quadraticCurveTo(x + i * 2 + a * 6, -len * .6, x + i * 2 + a * 12, -len); c.stroke(); } };
+      for (let x = B - 270; x < B + FW + SW; x += 26 + R() * 40) tuft(x);
+      // puddles
+      L.puddles = [[B + 150, 30, 90, 7], [B - 100, 44, 60, 5], [B + FW + 140, 52, 70, 6]];
+      L.puddles.forEach(([x, y, rx, ry]) => { c.fillStyle = col['sky-low']; c.globalAlpha = .55; c.beginPath(); c.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); c.fill(); c.globalAlpha = 1;
+        c.strokeStyle = col.pencil; c.lineWidth = .8; c.globalAlpha = .5; c.stroke(); c.globalAlpha = 1; });
     };
-    const loop = () => { step(); raf = requestAnimationFrame(loop); };
-    const start = () => { if (ready && !raf && visible && !document.hidden && !reduced) raf = requestAnimationFrame(loop); };
-    const stop = () => { cancelAnimationFrame(raf); raf = 0; };
-    const draw = (cw, ch) => {
-      stop(); readColors(); setup(cw, ch); ready = true;
-      if (reduced) { for (let i = 0; i < 260; i++) step(); } else start();
+
+    const setZone = i => {
+      fi = (i + findings.length) % findings.length;
+      const f = findings[fi], r = L.win(f.win[0], f.win[1]);
+      zone = { x: r.x - 30, y: r.y - 26, w: r.w + 60, h: r.h + 52, win: r, f };
+      const rr = mulberry(fi * 7 + 3), cxw = r.x + r.w / 2, cyw = r.y + r.h / 2;
+      // the wall comes apart in blocks; the edge is ragged
+      blocks = [];
+      for (let y = zone.y; y < zone.y + zone.h; y += 8) for (let x = zone.x; x < zone.x + zone.w; x += 8) {
+        const dx = (x + 4 - cxw) / (zone.w / 2), dy = (y + 4 - cyw) / (zone.h / 2);
+        if (dx ** 4 + dy ** 4 < .62 + (rr() - .5) * .42) blocks.push([x, y]);
+      }
+      frozen = Array.from({ length: 16 }, () => ({ x: zone.x + rr() * zone.w, y: zone.y + 8 + rr() * (zone.h - 8), len: 5 + rr() * 6 }));
+      shards = Array.from({ length: 8 }, (_, k) => ({ a: k / 8 * Math.PI * 2 + rr(), r: 34 + rr() * 26, sz: 5 + rr() * 7, rot: rr() * 6, spin: (rr() - .5) * .0016, ph: rr() * 6 }));
+      $('#f-n').textContent = `${fi + 1}/${findings.length}`;
+      $('#f-cost').textContent = `${eur.format(f.cost)} / month`;
+      $('#f-what').textContent = f.what; $('#f-why').textContent = f.why;
+      if (!L.phone) {
+        const bx = box.getBoundingClientRect(), tr = title.getBoundingClientRect();
+        const left = tr.left - bx.left, top = Math.min(h - tag.offsetHeight - 24, tr.bottom - bx.top + 26);
+        tag.style.left = `${left}px`; tag.style.top = `${top}px`;
+        zone.lead = { x: left + tag.offsetWidth, y: top + 24 };
+      } else zone.lead = null;
+      hopAt = performance.now() + 7000; tearAt = performance.now() + 400;
     };
-    new ResizeObserver(([e]) => {
-      const { width, height } = e.contentRect;
-      if (Math.abs(width - w) > 1 || Math.abs(height - h) > 1) draw(width, height);
-    }).observe(cv);
-    const retheme = () => { if (ready) draw(w, h); };
-    cv.parentElement.addEventListener('pointermove', e => { const r = cv.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; });
-    cv.parentElement.addEventListener('pointerleave', () => { mouse.x = mouse.y = -9999; });
-    document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
-    new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? start() : stop(); }).observe(cv);
+
+    const spawn = (d, any) => { d.x = Math.random() * (w + 80) - 60; d.y = any ? Math.random() * h : -20 - Math.random() * 60; d.len = 10 + Math.random() * 12; d.v = 8 + Math.random() * 5; d.end = gy + Math.random() * (h - gy); return d; };
+    const frame = now => {
+      const dt = Math.min(48, now - (last || now)); last = now;
+      px(ctx); ctx.drawImage(bg, 0, 0, w, h);
+      const zx = zone.x * s, zy = gy + zone.y * s, zw = zone.w * s, zh = zone.h * s;
+      const inZone = (x, y) => x > zx && x < zx + zw && y > zy && y < zy + zh;
+      // rain and splashes
+      ctx.strokeStyle = col.rain; ctx.globalAlpha = .38; ctx.lineWidth = 1; ctx.beginPath();
+      for (const d of drops) {
+        if (!reduced) { d.y += d.v * dt / 16; d.x += d.v * .18 * dt / 16; if (d.y > d.end) { splashes.push({ x: d.x, y: d.end, t: now }); spawn(d, false); } }
+        if (!inZone(d.x, d.y)) { ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - d.len * .18, d.y - d.len); }
+      }
+      ctx.stroke();
+      splashes = splashes.filter(p => now - p.t < 260);
+      ctx.globalAlpha = .45; ctx.beginPath();
+      splashes.forEach(p => { const k = (now - p.t) / 260 * 5 + 1; ctx.moveTo(p.x - k, p.y - k * .6); ctx.lineTo(p.x - k * 1.6, p.y - k * 1.4); ctx.moveTo(p.x + k, p.y - k * .6); ctx.lineTo(p.x + k * 1.6, p.y - k * 1.4); });
+      ctx.stroke(); ctx.globalAlpha = 1;
+
+      world(ctx);
+      const g = col['glitch-hi'], wn = zone.win, t = reduced ? 0 : now;
+      // inside the broken wall: the mesh the building is made of
+      ctx.save(); ctx.beginPath(); blocks.forEach(([x, y]) => ctx.rect(x, y, 8.4, 8.4)); ctx.fillStyle = col['term-bg']; ctx.fill(); ctx.clip();
+      ctx.strokeStyle = g; ctx.lineWidth = .7; ctx.globalAlpha = .85; ctx.beginPath();
+      const gx0 = zone.x - 12, gx1 = zone.x + zone.w + 12, gy0 = zone.y - 12, gy1 = zone.y + zone.h + 12;
+      for (let x = gx0; x <= gx1; x += 16) { ctx.moveTo(x, gy0); ctx.lineTo(x, gy1); }
+      for (let y = gy0; y <= gy1; y += 16) { ctx.moveTo(gx0, y); ctx.lineTo(gx1, y); }
+      for (let x = gx0; x < gx1; x += 16) for (let y = gy0; y < gy1; y += 16) { ctx.moveTo(x, y + 16); ctx.lineTo(x + 16, y); }
+      ctx.stroke(); ctx.globalAlpha = 1; ctx.lineWidth = 1.4; ctx.strokeRect(wn.x, wn.y, wn.w, wn.h);
+      ctx.beginPath(); ctx.moveTo(wn.x, wn.y); ctx.lineTo(wn.x + wn.w, wn.y + wn.h); ctx.moveTo(wn.x + wn.w, wn.y); ctx.lineTo(wn.x, wn.y + wn.h); ctx.globalAlpha = .6; ctx.stroke(); ctx.globalAlpha = 1;
+      ctx.restore();
+      // rain that stopped in mid-air
+      ctx.strokeStyle = g; ctx.fillStyle = g; ctx.lineWidth = 1.2; ctx.beginPath();
+      frozen.forEach(f => { ctx.moveTo(f.x, f.y); ctx.lineTo(f.x - f.len * .18, f.y - f.len); }); ctx.stroke();
+      frozen.forEach(f => { ctx.beginPath(); ctx.arc(f.x, f.y + 1.5, 1.3, 0, Math.PI * 2); ctx.fill(); });
+      // glass that hangs in the air and drifts back toward the frame
+      const cxw = wn.x + wn.w / 2, cyw = wn.y + wn.h / 2;
+      shards.forEach(sd => {
+        const rad = sd.r * (.8 + .2 * Math.sin(t * .0007 + sd.ph)), a = sd.a + t * .00012, x = cxw + Math.cos(a) * rad * 1.3, y = cyw + Math.sin(a) * rad * .8 + Math.sin(t * .0016 + sd.ph) * 2;
+        const rot = sd.rot + t * sd.spin, z = sd.sz;
+        ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+        poly(ctx, [[-z, -z * .4], [z * .9, -z * .7], [z * .2, z]]); ctx.fillStyle = col['glass-hi']; ctx.globalAlpha = .9; ctx.fill(); ctx.globalAlpha = 1;
+        ctx.strokeStyle = col.pencil; ctx.lineWidth = .8; ctx.stroke();
+        ctx.strokeStyle = g; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-z, -z * .4); ctx.lineTo(z * .9, -z * .7); ctx.stroke();
+        ctx.restore();
+      });
+      // the auditor's corner marks
+      const k = 10; ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.beginPath();
+      [[zone.x, zone.y, 1, 1], [zone.x + zone.w, zone.y, -1, 1], [zone.x, zone.y + zone.h, 1, -1], [zone.x + zone.w, zone.y + zone.h, -1, -1]]
+        .forEach(([x, y, sx, sy]) => { ctx.moveTo(x + sx * k, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * k); });
+      ctx.stroke();
+      // the glitch shows in the puddle below it
+      const pd = L.puddles.reduce((a, p) => Math.abs(p[0] - cxw) < Math.abs(a[0] - cxw) ? p : a);
+      ctx.save(); ctx.beginPath(); ctx.ellipse(pd[0], pd[1], pd[2], pd[3], 0, 0, Math.PI * 2); ctx.clip();
+      ctx.strokeStyle = g; ctx.globalAlpha = .7; ctx.lineWidth = 2; ctx.beginPath();
+      for (let i = 0; i < 4; i++) { const yy = pd[1] - pd[3] + 2 + i * 3.2, off = Math.sin(t * .004 + i) * 4; ctx.moveTo(cxw - 18 + off, yy); ctx.lineTo(cxw + 14 + off, yy); }
+      ctx.stroke(); ctx.restore();
+      // cat: tail sways, eyes blink
+      const V = L.vend, cx = V.x + 36, cy = V.y, sw = Math.sin(t * .0021) * 5;
+      ctx.strokeStyle = col.pencil; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(cx + 9, cy - 4); ctx.quadraticCurveTo(cx + 24 + sw, cy - 2, cx + 22 + sw * 1.4, cy + 20); ctx.stroke(); ctx.lineCap = 'butt';
+      if (reduced || (t % 4200) > 150) { ctx.fillStyle = g; ctx.fillRect(cx - 15, cy - 28, 2.2, 1.6); ctx.fillRect(cx - 10.5, cy - 28, 2.2, 1.6); }
+
+      px(ctx);
+      if (zone.lead) { ctx.strokeStyle = g; ctx.lineWidth = 1.2; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(zx, zy + zh / 2); ctx.lineTo(zx - 24, zy + zh / 2); ctx.lineTo(zone.lead.x, zone.lead.y); ctx.stroke(); ctx.setLineDash([]); }
+      // tear: a slice of the broken area shifts sideways for a moment
+      if (!reduced && now > tearAt && now < tearAt + 160) {
+        if (!tearY) tearY = zy + Math.random() * (zh - 8);
+        const sh = 4 + Math.random() * 6, off = (Math.random() < .5 ? -1 : 1) * (4 + Math.random() * 9);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(cv, zx * dpr, tearY * dpr, zw * dpr, sh * dpr, (zx + off) * dpr, tearY * dpr, zw * dpr, sh * dpr);
+      } else if (now > tearAt + 160) { tearY = 0; tearAt = now + 1400 + Math.random() * 2600; }
+      if (!reduced && !paused && now > hopAt) setZone(fi + 1);
+    };
+    const loop = now => { frame(now); raf = requestAnimationFrame(loop); };
+    const start = () => { if (!raf && visible && !document.hidden && !reduced && L) raf = requestAnimationFrame(loop); };
+    const stop = () => { cancelAnimationFrame(raf); raf = 0; last = 0; };
+    const build = (cw, ch) => {
+      stop(); w = cw; h = ch; dpr = Math.min(2, devicePixelRatio || 1);
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+      readColors(); layout(); paintStatic();
+      drops = Array.from({ length: Math.min(340, Math.floor(w * h / 2300)) }, () => spawn({}, true));
+      setZone(fi); frame(performance.now()); start();
+    };
+    new ResizeObserver(([e]) => { const { width, height } = e.contentRect; if (Math.abs(width - w) > 1 || Math.abs(height - h) > 1) build(width, height); }).observe(cv);
+    const retheme = () => { if (L) { readColors(); paintStatic(); frame(performance.now()); } };
+    new MutationObserver(retheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);
-    new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? start() : stop(); }).observe(box);
+    tag.addEventListener('pointerenter', () => { paused = true; });
+    tag.addEventListener('pointerleave', () => { paused = false; hopAt = performance.now() + 4000; });
+    const next = () => { if (!L) return; setZone(fi + 1); if (reduced) frame(performance.now()); };
+    $('#f-next').addEventListener('click', next);
+    return { next, current: () => findings[fi] };
   })();
 
   /* ---------- estimator + request draft ---------- */
@@ -218,6 +467,7 @@ import { copyText } from './lib/copy.js';
       '<span class="c">whoami</span>          who you are talking to',
       '<span class="c">services</span>        what I build, with reference repos',
       '<span class="c">audit</span> <span class="d">&lt;spend&gt;</span>   estimate AWS waste: audit 120k, audit 10k/mo',
+      '<span class="c">glitch</span>          show the next finding in the picture',
       '<span class="c">book</span>            draft an audit request with your estimate',
       '<span class="c">verify</span>          second checks for S3 signals that lie',
       '<span class="c">stack</span>           tools I use daily',
@@ -248,6 +498,10 @@ import { copyText } from './lib/copy.js';
       const set = setAudit(annual, true);
       if (set !== annual) print(`note: the audit is built for €20k–200k a year, so the estimator stops at ${eur.format(set)}. Your own figure above still holds.`, 'd');
       else print('<span class="d">estimator updated →</span> <a href="#estimate">see it below</a>  <span class="d">· run</span> <span class="c">book</span> <span class="d">to request the audit</span>');
+    },
+    glitch: () => {
+      scene.next(); const f = scene.current();
+      lines([`found  <span class="g">${eur.format(f.cost)} / month</span>  ${esc(f.what)}`, `<span class="d">${esc(f.why)}</span>`]);
     },
     book: () => {
       lines([

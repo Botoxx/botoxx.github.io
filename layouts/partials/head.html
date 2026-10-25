@@ -3,8 +3,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
     <meta name="color-scheme" content="dark light">
-    <meta name="theme-color" content="#0A0F1D" media="(prefers-color-scheme: dark)">
-    <meta name="theme-color" content="#ECEFF4" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#101211" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#D8DCD3" media="(prefers-color-scheme: light)">
 
     <title>{{ if .IsHome }}{{ .Site.Title }} · {{ .Site.Params.jobtitle }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
 
@@ -14,8 +14,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }} — Blog" href="{{ "/blog/index.xml" | absURL }}">
 
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/unbounded-latin-800-normal.woff2" crossorigin>
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-sans-latin-400-normal.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/dela-gothic-one-latin-400-normal.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/zen-kaku-gothic-new-latin-400-normal.woff2" crossorigin>
 
     {{ with resources.Get "css/site.css" | minify | fingerprint }}
     <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
