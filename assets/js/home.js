@@ -1,5 +1,6 @@
-// Homepage: hero scene, waste estimator with request draft, career timeline, shell.
+// Homepage: hero scene, waste estimator with request draft, career timeline, shell, underground band.
 import { copyText } from './lib/copy.js';
+import { initUnderground } from './lib/underground.js';
 
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
@@ -14,7 +15,7 @@ import { copyText } from './lib/copy.js';
   // World units: ground at y = 0, up is negative. Everything static is painted once per size or theme.
   const findings = [
     { win: [1, 2], cost: 127, what: 'NAT gateway, eu-west-1a', why: '0.2 GB a day goes through it' },
-    { win: [3, 3], cost: 47, what: '3 unattached EBS volumes', why: 'gp2, 500 GB, untouched 45+ days' },
+    { win: [3, 2], cost: 47, what: '3 unattached EBS volumes', why: 'gp2, 500 GB, untouched 45+ days' },
     { win: [0, 1], cost: 309, what: 'm5.2xlarge in staging', why: 'CPU under 5% for 7 days' }
   ];
   const scene = (() => {
@@ -22,6 +23,8 @@ import { copyText } from './lib/copy.js';
     const bg = document.createElement('canvas'), b = bg.getContext('2d');
     let w = 0, h = 0, dpr = 1, s = 1, W = 0, gy = 0, L = null, drops = [], splashes = [], shards = [], frozen = [], blocks = [];
     let zone = null, fi = 0, raf = 0, visible = true, tearAt = 0, tearY = 0, hopAt = 0, paused = false, last = 0;
+    // the cat: hover state, the pointer's x in world units, and when its walk started
+    let catHover = false, pointerX = 0, catRun = null, catTear = 0;
     const col = {};
     const KEYS = ['pencil', 'sky-top', 'sky-low', 'sun', 'cloud', 'cloud-sh', 'far', 'far-2', 'wall', 'wall-sh', 'wall-dk', 'trim', 'glass', 'glass-hi', 'street', 'curb', 'weed', 'metal', 'lit', 'rain', 'glitch-hi', 'rust', 'term-bg'];
     const mulberry = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -39,6 +42,7 @@ import { copyText } from './lib/copy.js';
       const lit = new Set(Array.from({ length: 4 }, () => `${Math.floor(r() * 4)},${Math.floor(r() * cols)}`));
       L = { phone, B, FW, FH, SW: 80, floors, cols, fh, cw, lit,
         win: (f, c) => ({ x: B + c * cw + 17, y: -FH + f * fh + 22, w: cw - 34, h: fh - 42 }),
+        door: { x: B + cw + 18, w: cw - 36, cx: B + cw * 1.5 }, balcony: { x: B + 64, y: -FH + 4 * fh - 41 },
         pole: B + FW + 80 + 70, tank: phone ? B + 228 : B + 52, hut: phone ? B + 24 : B + 196, ant: phone ? B + 300 : B + 296, shop: { x: B - 262, w: 240, h: 200 }, vend: { x: B - 236, y: -118, w: 62, h: 118 },
         street: (h - gy) / s };
     };
@@ -187,10 +191,7 @@ import { copyText } from './lib/copy.js';
         for (let rr = 0; rr < 3; rr++) for (let k = 0; k < 5; k++) { c.fillStyle = pc[(rr + k) % 5]; c.fillRect(V.x + 10 + k * 9.4, V.y + 22 + rr * 16, 6, 11); }
         c.fillStyle = col.metal; c.fillRect(V.x + 8, V.y + 92, V.w - 16, 14); c.fillRect(V.x + V.w - 16, V.y + 74, 6, 10);
         c.strokeStyle = col.pencil; c.lineWidth = 1.6; box4(c, V.x, V.y, V.w, V.h, 2); c.lineWidth = 1; box4(c, V.x + 6, V.y + 18, V.w - 12, 50, 0); box4(c, V.x + 8, V.y + 92, V.w - 16, 14, 0);
-        // the cat's body; its tail and eyes move, so they are drawn per frame
-        const cx = V.x + 36, cy = V.y;
-        c.fillStyle = col.pencil; c.beginPath(); c.ellipse(cx, cy - 9, 11, 9, 0, 0, Math.PI * 2); c.ellipse(cx - 8, cy - 15, 7, 9, -.3, 0, Math.PI * 2); c.arc(cx - 11, cy - 26, 6.5, 0, Math.PI * 2); c.fill();
-        poly(c, [[cx - 17, cy - 29], [cx - 16, cy - 38], [cx - 12, cy - 31]]); c.fill(); poly(c, [[cx - 9, cy - 31], [cx - 6, cy - 38], [cx - 5, cy - 29]]); c.fill(); }
+      }
       // weeds along the walls
       c.strokeStyle = col.weed; c.lineWidth = 1.4;
       const tuft = x => { for (let i = 0; i < 6; i++) { const a = (R() - .5) * 1.2, len = 8 + R() * 14; c.beginPath(); c.moveTo(x + i * 2, 0); c.quadraticCurveTo(x + i * 2 + a * 6, -len * .6, x + i * 2 + a * 12, -len); c.stroke(); } };
@@ -200,6 +201,63 @@ import { copyText } from './lib/copy.js';
       L.puddles.forEach(([x, y, rx, ry]) => { c.fillStyle = col['sky-low']; c.globalAlpha = .55; c.beginPath(); c.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); c.fill(); c.globalAlpha = 1;
         c.strokeStyle = col.pencil; c.lineWidth = .8; c.globalAlpha = .5; c.stroke(); c.globalAlpha = 1; });
     };
+
+    // A black cat on the vending machine. It notices the pointer; a click sends it past twice (déjà vu).
+    // jump time, and walking pace: `walk` ms per `dist` world units
+    const CAT = { jump: 450, walk: 2100, dist: 330 };
+    const catSit = (c, cx, cy, t, hover, look, a = 1) => {
+      c.save(); c.globalAlpha = a; c.fillStyle = col.pencil;
+      c.beginPath(); c.ellipse(cx, cy - 9, 11, 9, 0, 0, Math.PI * 2); c.ellipse(cx - 8, cy - 15, 7, 9, -.3, 0, Math.PI * 2); c.arc(cx - 11, cy - 26, 6.5, 0, Math.PI * 2); c.fill();
+      const ear = hover ? 42 : 38;
+      poly(c, [[cx - 17, cy - 29], [cx - 16, cy - ear], [cx - 12, cy - 31]]); c.fill(); poly(c, [[cx - 9, cy - 31], [cx - 6, cy - ear], [cx - 5, cy - 29]]); c.fill();
+      const sw = Math.sin(t * (hover ? .011 : .0021)) * (hover ? 8 : 5);
+      c.strokeStyle = col.pencil; c.lineWidth = 3; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(cx + 9, cy - 4); c.quadraticCurveTo(cx + 24 + sw, cy - 2, cx + 22 + sw * 1.4, cy + 20); c.stroke();
+      if (hover || reduced || (t % 4200) > 150) {
+        const ew = hover ? 2.8 : 2.2, eh = hover ? 2.6 : 1.6;
+        c.fillStyle = col['glitch-hi']; c.fillRect(cx - 15.4 + look, cy - 28.6, ew, eh); c.fillRect(cx - 10.8 + look, cy - 28.6, ew, eh);
+      }
+      c.restore();
+    };
+    const catWalk = (c, x, y, t, a = 1, tuck = false) => {
+      const ph = t * .014, leg = o => tuck ? 0 : Math.sin(ph + o) * 5;
+      c.save(); c.globalAlpha = a; c.fillStyle = col.pencil; c.strokeStyle = col.pencil; c.lineCap = 'round';
+      c.lineWidth = 2.6; c.beginPath();
+      [[8, 0], [5, Math.PI], [-8, Math.PI], [-11, 0]].forEach(([lx, o]) => { c.moveTo(x + lx, y - 9); c.lineTo(x + lx + leg(o), tuck ? y - 4 : y); });
+      c.stroke();
+      c.beginPath(); c.ellipse(x, y - 13, 14, 6.5, 0, 0, Math.PI * 2); c.arc(x + 15, y - 18, 6, 0, Math.PI * 2); c.fill();
+      poly(c, [[x + 11, y - 21], [x + 12, y - 30], [x + 16, y - 23]]); c.fill(); poly(c, [[x + 17, y - 23], [x + 20, y - 30], [x + 21, y - 20]]); c.fill();
+      c.lineWidth = 3; c.beginPath(); c.moveTo(x - 13, y - 15); c.quadraticCurveTo(x - 25, y - 20 + Math.sin(ph * .5) * 3, x - 22, y - 34); c.stroke();
+      c.fillStyle = col['glitch-hi']; c.fillRect(x + 16.5, y - 20, 2, 1.6);
+      c.restore();
+    };
+    // Draws the cat for this frame. A click sends it along the kerb twice (déjà vu); the second time it
+    // walks into the building, turns up on a balcony railing, and later returns to the vending machine.
+    const drawCat = (now, t) => {
+      const V = L.vend, cx = V.x + 36, cy = V.y, x0 = V.x + 90, dist = L.door.cx - x0, wd = CAT.walk * dist / CAT.dist;
+      const P = { walk: CAT.jump, enter: CAT.jump + 2 * wd };
+      P.inside = P.enter + 600; P.balcony = P.inside + 1400; P.back = P.balcony + 6000; P.end = P.back + 400;
+      const run = catRun === null ? -1 : now - catRun;
+      if (run < 0 || run >= P.end) {
+        catRun = null;
+        const look = catHover ? Math.max(-1, Math.min(1, (pointerX - (cx - 12)) / 40)) * .9 : 0;
+        return catSit(ctx, cx, cy, t, catHover, look);
+      }
+      if (run < P.walk) { const p = run / P.walk; return catWalk(ctx, cx + (x0 - cx) * p, cy + (8 - cy) * p - Math.sin(p * Math.PI) * 40, 0, 1, true); }
+      if (run < P.enter) {
+        const walked = run - P.walk, wt = walked % wd;
+        // the second pass is identical to the first; the moment it restarts, the picture tears
+        if (walked >= wd && !catTear) catTear = now;
+        return catWalk(ctx, x0 + wt / wd * dist, 8, wt * CAT.walk / wd);
+      }
+      // the door stands open while the cat goes in, then closes behind it
+      if (run < P.enter + 900) { ctx.fillStyle = col.pencil; ctx.globalAlpha = .85; ctx.fillRect(L.door.x + 4, -68, L.door.w / 2 - 6, 64); ctx.globalAlpha = 1; }
+      if (run < P.inside) { const p = (run - P.enter) / (P.inside - P.enter); return catWalk(ctx, L.door.cx, 8 - p * 10, CAT.walk, 1 - p); }
+      if (run < P.balcony) return;
+      if (run < P.back) return catSit(ctx, L.balcony.x, L.balcony.y, t, false, 0, Math.min(1, (run - P.balcony) / 400, (P.back - run) / 400));
+      catSit(ctx, cx, cy, t, false, 0, Math.min(1, (run - P.back) / 400));
+    };
+    const startCat = () => { if (!L || catRun !== null || reduced) return false; catRun = performance.now(); catTear = 0; catHover = false; cv.style.cursor = ''; return true; };
 
     const setZone = i => {
       fi = (i + findings.length) % findings.length;
@@ -282,10 +340,7 @@ import { copyText } from './lib/copy.js';
       ctx.strokeStyle = g; ctx.globalAlpha = .7; ctx.lineWidth = 2; ctx.beginPath();
       for (let i = 0; i < 4; i++) { const yy = pd[1] - pd[3] + 2 + i * 3.2, off = Math.sin(t * .004 + i) * 4; ctx.moveTo(cxw - 18 + off, yy); ctx.lineTo(cxw + 14 + off, yy); }
       ctx.stroke(); ctx.restore();
-      // cat: tail sways, eyes blink
-      const V = L.vend, cx = V.x + 36, cy = V.y, sw = Math.sin(t * .0021) * 5;
-      ctx.strokeStyle = col.pencil; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(cx + 9, cy - 4); ctx.quadraticCurveTo(cx + 24 + sw, cy - 2, cx + 22 + sw * 1.4, cy + 20); ctx.stroke(); ctx.lineCap = 'butt';
-      if (reduced || (t % 4200) > 150) { ctx.fillStyle = g; ctx.fillRect(cx - 15, cy - 28, 2.2, 1.6); ctx.fillRect(cx - 10.5, cy - 28, 2.2, 1.6); }
+      drawCat(now, t);
 
       px(ctx);
       if (zone.lead) { ctx.strokeStyle = g; ctx.lineWidth = 1.2; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(zx, zy + zh / 2); ctx.lineTo(zx - 24, zy + zh / 2); ctx.lineTo(zone.lead.x, zone.lead.y); ctx.stroke(); ctx.setLineDash([]); }
@@ -296,6 +351,12 @@ import { copyText } from './lib/copy.js';
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.drawImage(cv, zx * dpr, tearY * dpr, zw * dpr, sh * dpr, (zx + off) * dpr, tearY * dpr, zw * dpr, sh * dpr);
       } else if (now > tearAt + 160) { tearY = 0; tearAt = now + 1400 + Math.random() * 2600; }
+      // déjà vu: the street where the cat walks slips sideways in slices
+      if (catTear && now - catTear < 220) {
+        const x0 = (L.vend.x + 40) * s, y0 = gy - 44 * s, cw = (L.door.cx - L.vend.x) * s, ch = 60 * s;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        for (let i = 0; i < 3; i++) { const sy = y0 + Math.random() * ch, sh = 3 + Math.random() * 7, off = (Math.random() - .5) * 26; ctx.drawImage(cv, x0 * dpr, sy * dpr, cw * dpr, sh * dpr, (x0 + off) * dpr, sy * dpr, cw * dpr, sh * dpr); }
+      }
       if (!reduced && !paused && now > hopAt) setZone(fi + 1);
     };
     const loop = now => { frame(now); raf = requestAnimationFrame(loop); };
@@ -318,8 +379,24 @@ import { copyText } from './lib/copy.js';
     tag.addEventListener('pointerleave', () => { paused = false; hopAt = performance.now() + 4000; });
     const next = () => { if (!L) return; setZone(fi + 1); if (reduced) frame(performance.now()); };
     $('#f-next').addEventListener('click', next);
-    return { next, current: () => findings[fi] };
+    // pointer over the cat: world coordinates from the canvas box
+    const overCat = e => {
+      const r = cv.getBoundingClientRect(), wx = (e.clientX - r.left) / s, wy = (e.clientY - r.top - gy) / s, cx = L.vend.x + 36, cy = L.vend.y;
+      pointerX = wx;
+      return wx > cx - 24 && wx < cx + 34 && wy > cy - 46 && wy < cy + 22;
+    };
+    cv.addEventListener('pointermove', e => {
+      if (!L || catRun !== null) return;
+      const on = overCat(e);
+      if (on !== catHover) { catHover = on; cv.style.cursor = on ? 'pointer' : ''; }
+      if (reduced) frame(performance.now());
+    });
+    cv.addEventListener('pointerleave', () => { catHover = false; cv.style.cursor = ''; if (reduced && L) frame(performance.now()); });
+    cv.addEventListener('click', e => { if (L && overCat(e)) startCat(); });
+    return { next, current: () => findings[fi], cat: startCat };
   })();
+
+  initUnderground({ reduced });
 
   /* ---------- estimator + request draft ---------- */
   const spend = $('#spend'), draftBody = $('#draft-body'), draft = $('#draft'), cta = $('#cta');
@@ -468,6 +545,7 @@ import { copyText } from './lib/copy.js';
       '<span class="c">services</span>        what I build, with reference repos',
       '<span class="c">audit</span> <span class="d">&lt;spend&gt;</span>   estimate AWS waste: audit 120k, audit 10k/mo',
       '<span class="c">glitch</span>          show the next finding in the picture',
+      '<span class="c">cat</span>             ask the cat on the vending machine',
       '<span class="c">book</span>            draft an audit request with your estimate',
       '<span class="c">verify</span>          second checks for S3 signals that lie',
       '<span class="c">stack</span>           tools I use daily',
@@ -502,6 +580,10 @@ import { copyText } from './lib/copy.js';
     glitch: () => {
       scene.next(); const f = scene.current();
       lines([`found  <span class="g">${eur.format(f.cost)} / month</span>  ${esc(f.what)}`, `<span class="d">${esc(f.why)}</span>`]);
+    },
+    cat: () => {
+      if (!scene.cat()) return print(reduced ? 'cat: sits still (reduced motion is on).' : 'cat: busy. It is already walking.', 'd');
+      lines(['cat: a black cat walks past.', 'cat: a black cat walks past.', '<span class="d">The same cat, twice. That is a glitch: something just changed.</span>', '<span class="d">It went into the building. Watch the balconies.</span>']);
     },
     book: () => {
       lines([
