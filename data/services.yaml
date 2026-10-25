@@ -1,0 +1,21 @@
+# Homepage services list and the shell's `services` command.
+- tag: aws
+  name: AWS platform engineering
+  text: Multi-account landing zones, networking, IAM, and security baselines. Governed foundations before the technical debt compounds.
+  repo: aws-platform-baseline
+- tag: k8s
+  name: Kubernetes / EKS platforms
+  text: Cluster provisioning, GitOps delivery, autoscaling, observability, and policy enforcement. Production EKS without the 2AM incidents.
+  repo: eks-platform-reference
+- tag: finops
+  name: FinOps and cloud cost
+  text: Find and fix waste, then set up the alerting and governance so it doesn't come back. Often pays for itself in the first month.
+  repo: aws-finops-toolkit
+- tag: ci/cd
+  name: CI/CD and DevSecOps
+  text: Reusable pipelines with security gates, approval flows, and OIDC auth, so no long-lived credentials sit in CI.
+  repo: cicd-pipeline-templates
+- tag: llm
+  name: LLM / AI infrastructure
+  text: API cost controls and self-hosted model deployment on AWS, from a managed API proxy to self-hosted GPU on EKS.
+  repo: llm-infra-aws

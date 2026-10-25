@@ -1,0 +1,22 @@
+# Homepage stack section. Mirrors content/skills and content/courses; keep them in sync.
+groups:
+  - name: Cloud & infrastructure
+    level: advanced
+    items: [[AWS, "networking, data, compute"], [Terraform, "IaC, multi-cloud provisioning"], [Kubernetes, "orchestration, monitoring"], [OpenShift, "enterprise platform, operators"], [Docker, "multi-stage builds, optimization"]]
+  - name: DevOps & automation
+    level: advanced
+    items: [[CI/CD, "Jenkins, Spinnaker, GitHub Actions"], [Helm, "chart libraries for a microservice fleet"], [IaC, "Terraform, ARM, CloudFormation"], [Observability, "Prometheus, Grafana, ELK"]]
+  - name: Languages
+    level: advanced
+    items: [[Python, "automation, APIs, data processing"], [Bash, "system administration, CI/CD"], [Groovy, "Jenkins pipelines"]]
+  - name: AI & LLM
+    level: intermediate
+    items: [[LLMs, "integration, prompt engineering"], [Agents, "multi-step reasoning, orchestration"], [RAG, "Bedrock, OpenSearch, vector databases"], [Claude, "Claude Code, agentic workflows"]]
+certs:
+  - [KBS-302, Kubernetes and Container-based Application Security]
+  - [KBS-343, Kubernetes Troubleshooting]
+  - [OCP, OpenShift Administrator]
+  - [AZ-104, Microsoft Azure Administrator]
+  - [AI-434, GenAI Application Development with LLMs]
+  - [SEC, Ethical Hacking]
+  - [ISTQB, Foundation Level Software Tester]
