@@ -25,7 +25,7 @@ draft: false
 - **Configuration Management** - Helm charts
 - **Monitoring & Observability** - Prometheus, Grafana, ELK stack
 
-### AI & Machine Learning (Intermediate)
+### AI & Machine Learning (Advanced)
 - **Large Language Models** - Integration, prompt engineering
 - **AI Agent Development** - Multi-step reasoning, orchestration
 - **GenAI Applications** - Custom implementations, API integration
