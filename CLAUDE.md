@@ -73,7 +73,7 @@ All content lives in `content/` with each section as a standalone page using `in
 
 **Assets:**
 - `assets/css/site.css` - All styling: colour tokens (light default, `data-theme` and OS preference for dark), self-hosted `@font-face`, homepage, prose, code colours (chroma classes)
-- `assets/js/site.js` - Every page: theme toggle, copy address. `assets/js/home.js` - Homepage only: hero scene, estimator, timeline, shell. Bundled with Hugo `js.Build` (esbuild, no Node); plain JS because esbuild strips TypeScript types without checking them
+- `assets/js/site.js` - Every page: theme toggle, copy address. `assets/js/home.js` - Homepage only: hero scene (the cat on the vending machine reacts to hover; a click or the `cat` shell command plays the déjà vu walk), estimator, timeline, shell. `assets/js/lib/underground.js` - the band above the footer: street cutaway down to a sewer where machines pass a ship as the page scrolls; its colours are the `--soil`…`--eye` tokens, dark in both themes. Bundled with Hugo `js.Build` (esbuild, no Node); plain JS because esbuild strips TypeScript types without checking them
 - `static/fonts/` - Self-hosted Dela Gothic One (display), Zen Kaku Gothic New (text) and IBM Plex Mono (code, figures); no third-party font requests
 - `static/favicon.ico` - Site favicon
 
@@ -104,6 +104,15 @@ When updating content sections:
 2. Use Markdown for formatting - HTML is also supported (goldmark renderer has `unsafe = true`)
 3. Standalone pages (`/experience/`, `/skills/`, …) render their own `index.md`; the homepage reads `data/*.yaml`, so update both when facts change
 4. Blog posts need `date`, `summary` and `tags` in frontmatter; the homepage and the shell list the 5 most recent
+
+## TODO: on-site contact form (decided, not built)
+
+Visitors should be able to send the audit draft without leaving the site. Decision (2026-10-25): an AWS Lambda function URL in `eu-central-1` that emails the message through SES, so messages stay in the EU and the "data stays in-region" claim holds. Blocked until the owner's personal AWS account exists; until then the draft keeps its copy and mailto fallback.
+
+When building it:
+- Terraform, with the `aws-apn-tagging` skill loaded first. SES needs `cloudgeist.cloud` verified (DKIM DNS records).
+- Lambda: allow only the `https://cloudgeist.cloud` origin, cap the body length, reject a filled hidden trap field and sends within a few seconds of page load, and rate-limit per IP. Optional Telegram ping that names the enquiry but carries no message body.
+- Client: a "Send" button on the existing draft in `layouts/index.html`, shown only when an endpoint is configured. Send an idempotency key so a retry cannot deliver twice. On failure, show the error and keep the copy and mailto fallback.
 
 ## Key Dependencies
 
