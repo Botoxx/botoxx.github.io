@@ -1,0 +1,42 @@
+{{ define "main" }}
+<article class="page page--wide">
+    <div class="wrap">
+        <header class="page-head">
+            <p class="crumb"><a href="/">cloudgeist.cloud</a> / cv</p>
+            <h1 class="page-title">{{ site.Params.author }}</h1>
+            <p class="post-meta">{{ site.Params.jobtitle }} · Budapest, CET · remote or hybrid</p>
+            <p class="page-links">
+                <a href="/cv.pdf" download="Botond_Geiszt_CV.pdf"><svg class="ico" aria-hidden="true"><use href="#i-download"/></svg>Download the PDF</a>
+                <a href="/#work">Experience timeline <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            </p>
+        </header>
+
+        <section aria-labelledby="cv-stack">
+            <h2 class="cv-h" id="cv-stack">Stack</h2>
+            <div class="stack">
+                {{- range hugo.Data.stack.groups }}
+                <div><h3>{{ .name }} <span class="lvl">{{ .level }}</span></h3><ul>
+                    {{- range .items }}<li><b>{{ index . 0 }}</b> · {{ index . 1 }}</li>{{ end }}</ul></div>
+                {{- end }}
+            </div>
+        </section>
+
+        <div class="creds">
+            <section aria-labelledby="cv-certs">
+                <h2 class="cv-h" id="cv-certs">Courses &amp; certifications</h2>
+                <ul>
+                    {{- range hugo.Data.stack.certs }}
+                    <li><span class="k">{{ index . 0 }}</span>{{ index . 1 }}</li>
+                    {{- end }}
+                </ul>
+            </section>
+            <section aria-labelledby="cv-edu">
+                <h2 class="cv-h" id="cv-edu">Education</h2>
+                <p><b>Electrical Engineering</b>, Budapest University of Technology and Economics. Department of Telecommunications and Media Informatics, 2017–2022. Thesis: measuring the Elasticsearch engine under load.</p>
+                <h2 class="cv-h" style="margin-top:28px">Languages</h2>
+                <p>Hungarian (native), English (fluent)</p>
+            </section>
+        </div>
+    </div>
+</article>
+{{ end }}
