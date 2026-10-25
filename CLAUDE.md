@@ -61,7 +61,7 @@ All content lives in `content/` with each section as a standalone page using `in
 - `content/summary/index.md` - Professional summary (if applicable)
 
 **Layout Architecture:**
-- `layouts/index.html` - Homepage: hero with the interactive shell, waste estimator with request draft, services, audit, timeline, writing, stack. Repeated items come from `data/` (`services.yaml`, `roles.yaml`, `stack.yaml`, `pricing.yaml`) and the latest blog posts; they are passed to `home.js` as JSON in `#site-data`
+- `layouts/index.html` - Homepage: hero scene (canvas street drawing with a glitching window, from The Animatrix "Beyond") above the interactive shell, waste estimator with request draft, services, audit, timeline, writing, stack. Repeated items come from `data/` (`services.yaml`, `roles.yaml`, `stack.yaml`, `pricing.yaml`) and the latest blog posts; they are passed to `home.js` as JSON in `#site-data`
 - `layouts/_default/cv.html` - `/cv/` page (stack, certifications, education) from `data/stack.yaml`
 - `layouts/shortcodes/pricing.html` - Audit fee model from `data/pricing.yaml` (used on `/finops-audit/`); change the fee share, turnaround or definition of identified waste there only
 - `layouts/_default/single.html`, `layouts/blog/*.html`, `layouts/_default/{taxonomy,terms}.html` - Inner pages (`.page` + `.prose`)
@@ -73,13 +73,13 @@ All content lives in `content/` with each section as a standalone page using `in
 
 **Assets:**
 - `assets/css/site.css` - All styling: colour tokens (light default, `data-theme` and OS preference for dark), self-hosted `@font-face`, homepage, prose, code colours (chroma classes)
-- `assets/js/site.js` - Every page: theme toggle, copy address. `assets/js/home.js` - Homepage only: flow field, estimator, timeline, shell. Bundled with Hugo `js.Build` (esbuild, no Node); plain JS because esbuild strips TypeScript types without checking them
-- `static/fonts/` - Self-hosted Unbounded and IBM Plex (no third-party font requests)
+- `assets/js/site.js` - Every page: theme toggle, copy address. `assets/js/home.js` - Homepage only: hero scene, estimator, timeline, shell. Bundled with Hugo `js.Build` (esbuild, no Node); plain JS because esbuild strips TypeScript types without checking them
+- `static/fonts/` - Self-hosted Dela Gothic One (display), Zen Kaku Gothic New (text) and IBM Plex Mono (code, figures); no third-party font requests
 - `static/favicon.ico` - Site favicon
 
 ### Styling System
 
-Colour and type tokens live on `:root` in `assets/css/site.css`; light values are the default and dark values are applied for `[data-theme="dark"]` and for `prefers-color-scheme: dark` without an explicit light theme. Breakpoints at 1100px, 960px and 760px. One motion moment (the hero flow field), reduced-motion respected throughout.
+Colour and type tokens live on `:root` in `assets/css/site.css`; light values are the default and dark values are applied for `[data-theme="dark"]` and for `prefers-color-scheme: dark` without an explicit light theme. Scene colours (`--sky-top`, `--wall`, `--pencil`, …) are tokens too, read by the canvas, so both themes repaint the drawing. Green (`--glitch`) marks only the code world: shell, glitch, waste. Pencil borders use `.ink` (SVG filter `#pencil` in `icons.html`) and hatched shading uses a `.hatch` wrapper. Breakpoints at 1100px, 960px and 760px. One motion moment (the hero scene), reduced-motion respected throughout.
 
 ### Navigation Pattern
 
