@@ -10,7 +10,7 @@ groups:
     level: advanced
     items: [[Python, "automation, APIs, data processing"], [Bash, "system administration, CI/CD"], [Groovy, "Jenkins pipelines"]]
   - name: AI & LLM
-    level: intermediate
+    level: advanced
     items: [[LLMs, "integration, prompt engineering"], [Agents, "multi-step reasoning, orchestration"], [RAG, "Bedrock, OpenSearch, vector databases"], [Claude, "Claude Code, agentic workflows"]]
 certs:
   - [KBS-302, Kubernetes and Container-based Application Security]
