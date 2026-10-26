@@ -11,7 +11,7 @@ enableRobotsTXT = true
   section = ["HTML", "RSS"]
 
 [params]
-  description = "Cloud Engineer · AI integration · Hungary. Personal site and notes by Botond Geiszt."
+  description = "Cloud Engineer · AI Integrator in Budapest. I build AWS and Kubernetes platforms for DACH teams and find the money they quietly waste."
   author = "Botond Geiszt"
   jobtitle = "Cloud Engineer · AI Integrator"
   motto = "Cloud-native infrastructure and AI agents in production."
