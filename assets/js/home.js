@@ -1,6 +1,7 @@
 // Homepage: hero scene, waste estimator with request draft, career timeline, shell, underground band.
 import { copyText } from './lib/copy.js';
 import { initUnderground } from './lib/underground.js';
+import { solvePow } from './lib/pow.js';
 
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
@@ -458,6 +459,43 @@ import { initUnderground } from './lib/underground.js';
   $('#draft-copy').addEventListener('click', e =>
     copyText(`To: ${EMAIL}\nSubject: FinOps audit enquiry\n\n${draftBody.value}`, draftBody, e.currentTarget, 'Copy message'));
   setAudit(+spend.value);
+
+  /* ---------- send the draft through the contact relay (only when an endpoint is configured) ---------- */
+  const sendBtn = $('#draft-send');
+  if (sendBtn && data.contactEndpoint) {
+    const status = $('#draft-status'), emailIn = $('#draft-email'), nameIn = $('#draft-name'), trap = $('#draft-website');
+    const loadedAt = performance.now(), label = sendBtn.querySelector('span');
+    // The same email, name and text keep the same key, so a retry after a timeout cannot deliver twice.
+    let key = null, keyFor = '', pow = null;
+    const say = (msg, kind = '') => { status.textContent = msg; status.dataset.kind = kind; };
+    sendBtn.addEventListener('click', async () => {
+      const email = emailIn.value.trim(), name = nameIn.value.trim(), message = draftBody.value.trim();
+      if (!email || !emailIn.checkValidity()) { say('Add your email address so I can reply.', 'error'); emailIn.focus(); return; }
+      if (message.length < 20) { say('The message is too short to send. Write a sentence or two.', 'error'); draftBody.focus(); return; }
+      const fingerprint = `${email}\n${name}\n${message}`;
+      if (fingerprint !== keyFor) { key = crypto.randomUUID(); keyFor = fingerprint; pow = null; }
+      sendBtn.disabled = true; say('');
+      // A small hash puzzle tied to this send ID: about a second for a person, a real cost for a spam script.
+      if (!pow || Date.now() - pow.ts > 10 * 60000) { label.textContent = 'Checking…'; pow = await solvePow(key, Number(data.contactPowBits) || 18); }
+      label.textContent = 'Sending…';
+      const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 12000);
+      let done = false;
+      try {
+        const res = await fetch(data.contactEndpoint, {
+          method: 'POST', headers: { 'content-type': 'application/json' }, signal: ctl.signal,
+          body: JSON.stringify({ email, name, message, key, pow, website: trap.value, elapsedMs: Math.round(performance.now() - loadedAt) }),
+        });
+        const body = await res.json().catch(() => ({}));
+        if (res.ok) { done = true; label.textContent = 'Sent'; say(`Sent. I reply within one working day from ${EMAIL}.`, 'ok'); }
+        else say(body.error || `Sending failed (error ${res.status}). Copy the message or open it in your mail app.`, 'error');
+      } catch (err) {
+        say(err.name === 'AbortError' ? 'No answer from the server. Try again, or copy the message.' : 'Could not reach the server. Copy the message or open it in your mail app.', 'error');
+      } finally {
+        clearTimeout(timer);
+        if (!done) { sendBtn.disabled = false; label.textContent = 'Send message'; }
+      }
+    });
+  }
 
   /* ---------- timeline ---------- */
   const roles = data.roles;

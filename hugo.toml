@@ -20,6 +20,10 @@ enableRobotsTXT = true
   email = "botond@cloudgeist.cloud"
   ogImage = "/og-cover.png"
   calcom = "YOUR_CALCOM_HANDLE"
+  # Contact relay (infra/contact-relay): the Lambda function URL. Empty hides the Send button and its fields.
+  contactEndpoint = "https://tyecuuafk3rt3t2ah2pueh7xzq0pfcia.lambda-url.eu-central-1.on.aws/"
+  # Proof-of-work difficulty in bits; must match pow_bits in infra/contact-relay.
+  contactPowBits = 18
 
 [markup]
   [markup.goldmark.renderer]

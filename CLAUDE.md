@@ -105,14 +105,12 @@ When updating content sections:
 3. Standalone pages (`/experience/`, `/skills/`, …) render their own `index.md`; the homepage reads `data/*.yaml`, so update both when facts change
 4. Blog posts need `date`, `summary` and `tags` in frontmatter; the homepage and the shell list the 5 most recent
 
-## TODO: on-site contact form (decided, not built)
+## Contact relay (`infra/contact-relay/`)
 
-Visitors should be able to send the audit draft without leaving the site. Decision (2026-10-25): an AWS Lambda function URL in `eu-central-1` that emails the message through SES, so messages stay in the EU and the "data stays in-region" claim holds. Blocked until the owner's personal AWS account exists; until then the draft keeps its copy and mailto fallback.
-
-When building it:
-- Terraform, with the `aws-apn-tagging` skill loaded first. SES needs `cloudgeist.cloud` verified (DKIM DNS records).
-- Lambda: allow only the `https://cloudgeist.cloud` origin, cap the body length, reject a filled hidden trap field and sends within a few seconds of page load, and rate-limit per IP. Optional Telegram ping that names the enquiry but carries no message body.
-- Client: a "Send" button on the existing draft in `layouts/index.html`, shown only when an endpoint is configured. Send an idempotency key so a retry cannot deliver twice. On failure, show the error and keep the copy and mailto fallback.
+Visitors can send the audit draft from the page. The browser posts it to a Lambda function URL in `eu-central-1` (personal AWS account `671863377671`, SSO profile `cloudgeist`; no Apex tags). The Lambda emails it to the owner through SES. Terraform state is in the S3 bucket `cloudgeist-tfstate-671863377671`. See `infra/contact-relay/README.md` for deploy, DNS (DKIM CNAMEs at Namecheap) and operations.
+- `params.contactEndpoint` in `hugo.toml` switches the Send button and its fields on; empty keeps the copy and mailto-only draft. `params.contactPowBits` must equal Terraform's `pow_bits`.
+- Handler contract tests: `node --test infra/contact-relay/lambda/`. Run them before every apply.
+- Spam limits: proof of work (`assets/js/lib/pow.js`), 20 messages a day site-wide, 5 an hour per network, a trap field and a minimum fill time. The Origin check alone does not stop scripts.
 
 ## Key Dependencies
 

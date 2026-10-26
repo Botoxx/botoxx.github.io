@@ -3,7 +3,7 @@
 {{- range first 5 (where site.RegularPages "Type" "blog") -}}
   {{- $posts = $posts | append (dict "date" (.Date.Format "2006-01-02") "title" .Title "url" .RelPermalink) -}}
 {{- end -}}
-{{- $data := dict "email" site.Params.email "posts" $posts "services" hugo.Data.services "roles" hugo.Data.roles "pricing" hugo.Data.pricing -}}
+{{- $data := dict "email" site.Params.email "posts" $posts "services" hugo.Data.services "roles" hugo.Data.roles "pricing" hugo.Data.pricing "contactEndpoint" site.Params.contactEndpoint "contactPowBits" site.Params.contactPowBits -}}
 <section class="hero" aria-label="Introduction">
   <div class="scene" id="scene-box">
     <canvas id="scene" aria-hidden="true"></canvas>
@@ -113,13 +113,28 @@
             <dt>To</dt><dd id="draft-to">{{ site.Params.email }}</dd>
             <dt>Subject</dt><dd id="draft-subject">FinOps audit enquiry</dd>
           </dl>
+          {{- with site.Params.contactEndpoint }}
+          <div class="draft-from">
+            <div><label for="draft-email">Your email <span>so I can reply</span></label><input id="draft-email" type="email" autocomplete="email" maxlength="254" required></div>
+            <div><label for="draft-name">Name <span>optional</span></label><input id="draft-name" type="text" autocomplete="name" maxlength="100"></div>
+          </div>
+          <div class="trap" aria-hidden="true"><label for="draft-website">Website</label><input id="draft-website" type="text" tabindex="-1" autocomplete="off"></div>
+          {{- end }}
           <label for="draft-body">Your message (edit freely)</label>
           <textarea id="draft-body" spellcheck="true"></textarea>
           <div class="draft-actions">
+            {{- if site.Params.contactEndpoint }}
+            <button class="btn2 primary" id="draft-send" type="button"><svg class="ico"><use href="#i-arrow"/></svg><span>Send message</span></button>
+            {{- end }}
             <button class="btn2" id="draft-copy" type="button"><svg class="ico"><use href="#i-copy"/></svg><span>Copy message</span></button>
-            <a class="btn2 primary" id="draft-mail" href="mailto:{{ site.Params.email }}"><svg class="ico"><use href="#i-mail"/></svg>Open in mail app</a>
+            <a class="btn2{{ if not site.Params.contactEndpoint }} primary{{ end }}" id="draft-mail" href="mailto:{{ site.Params.email }}"><svg class="ico"><use href="#i-mail"/></svg>Open in mail app</a>
           </div>
+          {{- if site.Params.contactEndpoint }}
+          <p class="draft-status" id="draft-status" role="status" aria-live="polite"></p>
+          <p class="fine">Send delivers the message to my inbox; your address is used only to reply, and nothing is stored on this site. If sending fails, copy the message or open it in your mail app.</p>
+          {{- else }}
           <p class="fine">Nothing is sent from this page. If the mail app does not open, copy the message and paste it into a new email to the address above.</p>
+          {{- end }}
         </div>
         <p class="note">An estimate from the stated 15–30% range, not a quote. The audit replaces it with per-finding numbers from your account.</p>
       </div></div>
