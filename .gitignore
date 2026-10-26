@@ -17,3 +17,9 @@ Thumbs.db
 # Temporary files
 *.log
 tmp/
+
+# Terraform (infra/): working dirs, build output, local state; the lock file is committed
+.terraform/
+infra/**/.build/
+*.tfstate
+*.tfstate.*
