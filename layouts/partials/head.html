@@ -9,9 +9,10 @@
     <title>{{ if .IsHome }}{{ .Site.Title }} · {{ .Site.Params.jobtitle }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
 
     <link rel="canonical" href="{{ .Permalink }}">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    {{- /* Icons are fingerprinted so browsers drop a cached old icon; /favicon.ico stays at the root for clients that ask for it directly. */}}
+    {{ with resources.Get "images/favicon.svg" | fingerprint }}<link rel="icon" type="image/svg+xml" href="{{ .RelPermalink }}">{{ end }}
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+    {{ with resources.Get "images/apple-touch-icon.png" | fingerprint }}<link rel="apple-touch-icon" sizes="180x180" href="{{ .RelPermalink }}">{{ end }}
     <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }} — Blog" href="{{ "/blog/index.xml" | absURL }}">
 
     <link rel="preload" as="font" type="font/woff2" href="/fonts/dela-gothic-one-latin-400-normal.woff2" crossorigin>
